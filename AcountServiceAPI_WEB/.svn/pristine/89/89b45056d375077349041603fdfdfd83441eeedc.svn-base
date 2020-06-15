@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+	<p:dialog widgetVar="dialogchangepassword" header="Đổi mật khẩu"
+		modal="true"  width="400">
+		<h:form id="changepasswordId">
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Mật khẩu cũ" />
+				<p:password value="#{accountBean.passwordOld}" />
+				<p:outputLabel value="Mật khẩu mới" />
+				<p:password value="#{accountBean.passwordNew}" match="pwd2"
+					id="passm1" />
+				<p:outputLabel value="Nhập lại mật khẩu mới" for="pwd2" />
+				<p:password id="pwd2" value="#{accountBean.passwordNew}" />
+				<p:commandButton action="#{accountBean.changePassword}" update=":messages"/>
+			</h:panelGrid>
+		</h:form>
+	</p:dialog>
+</ui:composition>

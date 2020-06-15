@@ -1,0 +1,22 @@
+package trong.lixco.com.impl;
+
+import java.util.List;
+
+import trong.lixco.com.entity.MemberDetail;
+
+public interface ImplMemberDetail {
+	MemberDetail findId(long id);
+
+	List<MemberDetail> findAll();
+
+	List<MemberDetail> findSearch(String searchText, String[] params);
+
+	MemberDetail create(MemberDetail memberDetail);
+
+	MemberDetail update(MemberDetail memberDetail);
+
+	boolean delete(MemberDetail memberDetail);
+
+	MemberDetail findByCustom(String param, String value);
+
+}

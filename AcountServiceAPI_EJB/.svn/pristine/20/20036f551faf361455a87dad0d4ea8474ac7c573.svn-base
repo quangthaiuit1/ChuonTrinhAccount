@@ -1,0 +1,116 @@
+package trong.lixco.com.service;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import trong.lixco.com.entity.MemberDetail;
+import trong.lixco.com.impl.ImplMemberDetail;
+
+@Stateless
+@TransactionManagement(TransactionManagementType.CONTAINER)
+public class MemberDetailService implements ImplMemberDetail {
+	@Inject
+	private EntityManager em;
+
+	@Override
+	public List<MemberDetail> findSearch(String searchText, String[] params) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<MemberDetail> cq = cb.createQuery(MemberDetail.class);
+		List<Predicate> predicates = new LinkedList<Predicate>();
+		Root<MemberDetail> root = cq.from(MemberDetail.class);
+		List<ParameterExpression<String>> paramExps = new LinkedList<ParameterExpression<String>>();
+
+		for (int i = 0; i < params.length; i++) {
+			String selectedParam = params[i];
+			Path<String> path = root.get(selectedParam);
+			ParameterExpression<String> p = cb.parameter(String.class);
+			Predicate likePredicate = cb.like(path, p);
+			predicates.add(likePredicate);
+			paramExps.add(p);
+		}
+
+		cq.select(root).where(cb.or(predicates.toArray(new Predicate[0]))).distinct(true);
+
+		TypedQuery<MemberDetail> query = em.createQuery(cq);
+		for (int i = 0; i < paramExps.size(); i++) {
+			query.setParameter(paramExps.get(i), "%" + searchText + "%");
+		}
+		List<MemberDetail> results = query.getResultList();
+		return results;
+	}
+
+	@Override
+	public MemberDetail findByCustom(String param, String value) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<MemberDetail> cq = cb.createQuery(MemberDetail.class);
+		List<Predicate> predicates = new LinkedList<Predicate>();
+		Root<MemberDetail> root = cq.from(MemberDetail.class);
+
+		Path<String> path = root.get(param);
+		ParameterExpression<String> p = cb.parameter(String.class);
+		Predicate likePredicate = cb.like(path, p);
+		predicates.add(likePredicate);
+
+		cq.select(root).where(cb.or(predicates.toArray(new Predicate[0]))).distinct(true);
+
+		TypedQuery<MemberDetail> query = em.createQuery(cq);
+		query.setParameter(p, value);
+		List<MemberDetail> results = query.getResultList();
+		if (results.size() != 0) {
+			return results.get(0);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public List<MemberDetail> findAll() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<MemberDetail> cq = cb.createQuery(MemberDetail.class);
+		Root<MemberDetail> root = cq.from(MemberDetail.class);
+		cq.select(root);
+		TypedQuery<MemberDetail> query = em.createQuery(cq);
+		return query.getResultList();
+	}
+
+	@Override
+	public MemberDetail findId(long id) {
+		return em.find(MemberDetail.class, id);
+	}
+
+	@Override
+	public MemberDetail create(MemberDetail memberDetail) {
+		em.persist(memberDetail);
+		return em.merge(memberDetail);
+	}
+
+	@Override
+	public MemberDetail update(MemberDetail memberDetail) {
+		return em.merge(memberDetail);
+	}
+
+	@Override
+	public boolean delete(MemberDetail memberDetail) {
+		try {
+			MemberDetail merge = em.merge(memberDetail);
+			em.remove(merge);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+}

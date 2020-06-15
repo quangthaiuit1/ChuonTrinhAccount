@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition>
+	<p:dialog widgetVar="detailRole" modal="true" resizable="false"
+		closeOnEscape="true" header="Thông tin chi tiết">
+		<br />
+		<h:form id="detailroleid">
+			<p:dataTable value="#{relationshipRoleAccBean.userRights}" lazy="true"
+				style="width:500px; height:320px" rowKey="#{item.id}"
+				widgetVar="datatb" resizableColumns="true" var="item">
+				<p:column headerText="Tên Form" style="width:150px">
+					<h:outputText value="#{item.formList.name}" />
+				</p:column>
+				<p:column headerText="Truy cập"
+					style="width:50px; text-align:center">
+					<p:selectBooleanCheckbox value="#{item.allow}" disabled="true" />
+				</p:column>
+				<p:column headerText="Thêm mới"
+					style="width:50px; text-align:center">
+					<p:selectBooleanCheckbox value="#{item.insert}" disabled="true" />
+				</p:column>
+				<p:column headerText="Cập nhật"
+					style="width:50px; text-align:center">
+					<p:selectBooleanCheckbox value="#{item.update}" disabled="true" />
+				</p:column>
+				<p:column headerText="Xoá" style="width:50px; text-align:center">
+					<p:selectBooleanCheckbox value="#{item.delete}" disabled="true" />
+				</p:column>
+				<f:facet name="footer">
+					<div style="clear: both;" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

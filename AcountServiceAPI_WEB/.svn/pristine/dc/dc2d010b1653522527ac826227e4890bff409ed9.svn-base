@@ -1,0 +1,226 @@
+package trong.lixco.com.bean;
+
+/**
+ * Danh muc menu
+ */
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import trong.lixco.com.entity.Account;
+import trong.lixco.com.entity.DepartNoticeRela;
+import trong.lixco.com.entity.Department;
+import trong.lixco.com.entity.MemNoticeRela;
+import trong.lixco.com.entity.Member;
+import trong.lixco.com.entity.NoticeSystem;
+import trong.lixco.com.impl.ImplAccount;
+import trong.lixco.com.impl.ImplDepartNoticeRela;
+import trong.lixco.com.impl.ImplDepartment;
+import trong.lixco.com.impl.ImplMemNoticeRela;
+import trong.lixco.com.impl.ImplMember;
+import trong.lixco.com.impl.ImplNoticeSystem;
+import trong.lixco.com.util.Notify;
+
+@ManagedBean
+@ViewScoped
+public class NoticeSystemBean {
+	private Notify notify;
+	private List<NoticeSystem> noticeSystems;
+	private NoticeSystem noticeSystem;
+
+	private NoticeSystem noticeSystemEdit;
+	private List<Department> departments;
+	private Department departmentEdit;
+	private List<Member> members;
+
+	@EJB
+	private ImplNoticeSystem noticeSystemService;
+	@EJB
+	private ImplDepartment departmentService;
+	@EJB
+	private ImplMember memberService;
+	@EJB
+	private ImplAccount accountService;
+	@EJB
+	private ImplDepartNoticeRela departNoticeRelaService;
+	@EJB
+	private ImplMemNoticeRela memNoticeRelaService;
+
+	@PostConstruct
+	public void init() {
+		noticeSystem = new NoticeSystem();
+		noticeSystems = noticeSystemService.findAll();
+		departments = departmentService.findAll();
+	}
+
+	/*
+	 * Luu noticeSystem moi
+	 */
+	public void createOrUpdate() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		if (noticeSystem.getId() == null) {
+			noticeSystem = noticeSystemService.createOrUpdate(noticeSystem);
+			if (noticeSystems == null)
+				noticeSystems = new ArrayList<NoticeSystem>();
+			noticeSystems.add(noticeSystem);
+
+			if (departments != null) {
+				for (int i = 0; i < departments.size(); i++) {
+					if (departments.get(i).isSelect()) {
+						DepartNoticeRela dp = new DepartNoticeRela();
+						dp.setDepartment(departments.get(i));
+						dp.setNoticeSystem(noticeSystem);
+						departNoticeRelaService.saveOrUpdater(dp);
+					}
+				}
+			}
+			if (members != null) {
+				for (int i = 0; i < members.size(); i++) {
+					if (members.get(i).isSelect()) {
+						MemNoticeRela dp = new MemNoticeRela();
+						dp.setMember(members.get(i));
+						dp.setNoticeSystem(noticeSystem);
+						memNoticeRelaService.saveOrUpdater(dp);
+						try {
+							Account account = accountService.findMember(members.get(i));
+							account.setNotice(true);
+							accountService.update(account);
+						} catch (Exception e) {
+						}
+					}
+				}
+			}
+		} else {
+			noticeSystem = noticeSystemService.createOrUpdate(noticeSystem);
+			for (int i = 0; i < noticeSystems.size(); i++) {
+				if (noticeSystems.get(i).equals(noticeSystem)) {
+					noticeSystems.set(i, noticeSystem);
+					break;
+				}
+			}
+		}
+
+		notify.success();
+	}
+
+	/*
+	 * Reset lai form tao program (xoa thong tin tren form)
+	 */
+	public void reset() {
+		noticeSystem = new NoticeSystem();
+		if (departments != null) {
+			for (int i = 0; i < departments.size(); i++) {
+				departments.get(i).setSelect(false);
+			}
+		}
+		if (members != null) {
+			for (int i = 0; i < members.size(); i++) {
+				members.get(i).setSelect(false);
+			}
+		}
+	}
+
+	/*
+	 * Chá»‰nh sá»­a lai form tao program (xoa thong tin tren form)
+	 */
+	public void showEdit() {
+		this.noticeSystem = noticeSystemEdit;
+		List<DepartNoticeRela> departNoticeRelas = departNoticeRelaService.findByNotice(noticeSystem);
+		for (int i = 0; i < departNoticeRelas.size(); i++) {
+			for (int j = 0; j < departments.size(); j++) {
+				if (departNoticeRelas.get(i).getDepartment().equals(departments.get(j)))
+					departments.get(j).setSelect(true);
+			}
+		}
+	}
+
+	public void showEditDepartment() {
+		if (departmentEdit != null) {
+			members = memberService.findByDepartment(departmentEdit);
+		}
+		if (noticeSystem.getId() != null) {
+			List<MemNoticeRela> memNoticeRelas = memNoticeRelaService.findByNotice(noticeSystem);
+			for (int i = 0; i < memNoticeRelas.size(); i++) {
+				for (int j = 0; j < members.size(); j++) {
+					if (memNoticeRelas.get(i).getMember().equals(members.get(j)))
+						members.get(j).setSelect(true);
+				}
+			}
+		}
+	}
+
+	public void displayNoticeSystem(NoticeSystem event) {
+		setNoticeSystem(event);
+	}
+
+	public void deleteNoticeSystem() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		if (noticeSystem.getId() != null) {
+			boolean status = noticeSystemService.delete(noticeSystem);
+			if (status) {
+				noticeSystems.remove(noticeSystem);
+				reset();
+				notify.success();
+			} else {
+				notify.error();
+			}
+		} else {
+			notify.warning("Chưa chọn thông báo!");
+		}
+	}
+
+	public List<NoticeSystem> getNoticeSystems() {
+		return noticeSystems;
+	}
+
+	public void setNoticeSystems(List<NoticeSystem> noticeSystems) {
+		this.noticeSystems = noticeSystems;
+	}
+
+	public NoticeSystem getNoticeSystem() {
+		return noticeSystem;
+	}
+
+	public void setNoticeSystem(NoticeSystem noticeSystem) {
+		this.noticeSystem = noticeSystem;
+	}
+
+	public NoticeSystem getNoticeSystemEdit() {
+		return noticeSystemEdit;
+	}
+
+	public void setNoticeSystemEdit(NoticeSystem noticeSystemEdit) {
+		this.noticeSystemEdit = noticeSystemEdit;
+	}
+
+	public List<Department> getDepartments() {
+		return departments;
+	}
+
+	public void setDepartments(List<Department> departments) {
+		this.departments = departments;
+	}
+
+	public Department getDepartmentEdit() {
+		return departmentEdit;
+	}
+
+	public void setDepartmentEdit(Department departmentEdit) {
+		this.departmentEdit = departmentEdit;
+	}
+
+	public List<Member> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Member> members) {
+		this.members = members;
+	}
+
+}

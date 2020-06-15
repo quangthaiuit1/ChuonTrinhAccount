@@ -1,0 +1,250 @@
+package trong.lixco.com.entity;
+
+import java.util.Date;
+
+import javax.persistence.Entity;
+
+@Entity
+public class MemberDetail extends AbstractEntity {
+	private String sodienthoai;
+	private String diachi;
+	private String tenkhoi;
+	private String phai;
+	private Date ngaysinh;
+	private String noisinh;
+	private Date ngayvao;
+	private Date ngaynghi;
+	private String phep;
+	private String phucap;
+	private String congviec;
+	private String trinhdo;
+	private String hopdong;
+	private Date ngaykyhopdong;
+	private Date ngaygiahanhopdong;
+	private Date ngayketthuchopdong;
+	private String thamnien;
+	private String sotuoi;
+	private String dienbienluong;
+	private String daotao;
+	private String sobaohiem;
+	private String sochungminh;
+	private Date ngaycap;
+	private String noicap;
+	private String masothue;
+	private String mahoso;
+	
+	
+	
+
+	public String getTenkhoi() {
+		return tenkhoi;
+	}
+
+	public void setTenkhoi(String tenkhoi) {
+		this.tenkhoi = tenkhoi;
+	}
+
+	public String getPhai() {
+		return phai;
+	}
+
+	public void setPhai(String phai) {
+		this.phai = phai;
+	}
+
+	public Date getNgaysinh() {
+		return ngaysinh;
+	}
+
+	public void setNgaysinh(Date ngaysinh) {
+		this.ngaysinh = ngaysinh;
+	}
+
+	public String getNoisinh() {
+		return noisinh;
+	}
+
+	public void setNoisinh(String noisinh) {
+		this.noisinh = noisinh;
+	}
+
+	public Date getNgayvao() {
+		return ngayvao;
+	}
+
+	public void setNgayvao(Date ngayvao) {
+		this.ngayvao = ngayvao;
+	}
+
+	public Date getNgaynghi() {
+		return ngaynghi;
+	}
+
+	public void setNgaynghi(Date ngaynghi) {
+		this.ngaynghi = ngaynghi;
+	}
+
+	public String getPhep() {
+		return phep;
+	}
+
+	public void setPhep(String phep) {
+		this.phep = phep;
+	}
+
+	
+
+	public String getPhucap() {
+		return phucap;
+	}
+
+	public void setPhucap(String phucap) {
+		this.phucap = phucap;
+	}
+
+	public String getCongviec() {
+		return congviec;
+	}
+
+	public void setCongviec(String congviec) {
+		this.congviec = congviec;
+	}
+
+	public String getTrinhdo() {
+		return trinhdo;
+	}
+
+	public void setTrinhdo(String trinhdo) {
+		this.trinhdo = trinhdo;
+	}
+
+	public String getHopdong() {
+		return hopdong;
+	}
+
+	public void setHopdong(String hopdong) {
+		this.hopdong = hopdong;
+	}
+
+	public Date getNgaykyhopdong() {
+		return ngaykyhopdong;
+	}
+
+	public void setNgaykyhopdong(Date ngaykyhopdong) {
+		this.ngaykyhopdong = ngaykyhopdong;
+	}
+
+	public Date getNgayketthuchopdong() {
+		return ngayketthuchopdong;
+	}
+
+	public void setNgayketthuchopdong(Date ngayketthuchopdong) {
+		this.ngayketthuchopdong = ngayketthuchopdong;
+	}
+
+	public String getThamnien() {
+		return thamnien;
+	}
+
+	public void setThamnien(String thamnien) {
+		this.thamnien = thamnien;
+	}
+
+	public String getSotuoi() {
+		return sotuoi;
+	}
+
+	public void setSotuoi(String sotuoi) {
+		this.sotuoi = sotuoi;
+	}
+
+	public String getDienbienluong() {
+		return dienbienluong;
+	}
+
+	public void setDienbienluong(String dienbienluong) {
+		this.dienbienluong = dienbienluong;
+	}
+
+	public String getDaotao() {
+		return daotao;
+	}
+
+	public void setDaotao(String daotao) {
+		this.daotao = daotao;
+	}
+
+	public String getSobaohiem() {
+		return sobaohiem;
+	}
+
+	public void setSobaohiem(String sobaohiem) {
+		this.sobaohiem = sobaohiem;
+	}
+
+	public String getSochungminh() {
+		return sochungminh;
+	}
+
+	public void setSochungminh(String sochungminh) {
+		this.sochungminh = sochungminh;
+	}
+
+	public Date getNgaycap() {
+		return ngaycap;
+	}
+
+	public void setNgaycap(Date ngaycap) {
+		this.ngaycap = ngaycap;
+	}
+
+	public String getNoicap() {
+		return noicap;
+	}
+
+	public void setNoicap(String noicap) {
+		this.noicap = noicap;
+	}
+
+	public String getMasothue() {
+		return masothue;
+	}
+
+	public void setMasothue(String masothue) {
+		this.masothue = masothue;
+	}
+
+	public String getMahoso() {
+		return mahoso;
+	}
+
+	public void setMahoso(String mahoso) {
+		this.mahoso = mahoso;
+	}
+
+	public String getSodienthoai() {
+		return sodienthoai;
+	}
+
+	public void setSodienthoai(String sodienthoai) {
+		this.sodienthoai = sodienthoai;
+	}
+
+	public String getDiachi() {
+		return diachi;
+	}
+
+	public void setDiachi(String diachi) {
+		this.diachi = diachi;
+	}
+
+	public Date getNgaygiahanhopdong() {
+		return ngaygiahanhopdong;
+	}
+
+	public void setNgaygiahanhopdong(Date ngaygiahanhopdong) {
+		this.ngaygiahanhopdong = ngaygiahanhopdong;
+	}
+	
+
+}

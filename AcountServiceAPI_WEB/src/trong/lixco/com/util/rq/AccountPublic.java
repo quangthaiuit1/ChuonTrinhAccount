@@ -1,0 +1,90 @@
+package trong.lixco.com.util.rq;
+
+import java.util.List;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+
+import trong.lixco.com.entity.Member;
+import trong.lixco.com.impl.ImplAccount;
+import trong.lixco.com.impl.ImplMember;
+import trong.lixco.com.service.DepartmentService;
+
+
+@Path("member")
+public class AccountPublic {
+	@Context
+	private HttpServletRequest request;
+	@Context
+	private HttpServletResponse response;
+	@EJB
+	private ImplMember memberService;
+	@Inject
+	private DepartmentService departmentService;
+	@EJB
+	private ImplAccount accountService;
+
+	@POST
+	@Produces("text/javascript; charset=utf-8")
+	public String process(@Context HttpServletResponse res) {
+		String cmd = request.getParameter(DefinedName.PARAM_COMMAND);
+		String data = request.getParameter(DefinedName.PARAM_DATA);
+		String content = "";
+		try {
+			if (cmd != null && data != null) {
+				// xu lý response
+				switch (cmd) {
+				case "search":
+					content = searchMember(data);
+					break;
+				case "detail":
+					content=getMemberById(data);
+					break;
+				case "list":
+					break;
+				default:
+					break;
+				}
+			} else {
+				content = CommonService.FormatResponse(-1, "error");
+			}
+			return content;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return CommonService.FormatResponse(-1, "error");
+		}
+	}
+
+	private String searchMember(String data) {
+		// cm="search"&dt={fields:"code,name",str:"abc"}
+		try {
+			String fields = JsonParserUtil.parseStringValue(data, "fields");
+			String str = JsonParserUtil.parseStringValue(data, "str");
+			List<Member> list = memberService.findSearch(str, fields.split(","));
+			String result = CommonService.FormatResponse(0, "", list);
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return CommonService.FormatResponse(-1, "error");
+		}
+	}
+	private String getMemberById(String data){
+		//cm="detail"&dt={member_id=1}
+		try{
+			String member_id=JsonParserUtil.parseStringValue(data,"member_id");
+			Member member=memberService.findId(Long.parseLong(member_id));
+			String result=CommonService.FormatResponse(0,"",member);
+			return result;
+		}catch(Exception e){
+			e.printStackTrace();
+			return CommonService.FormatResponse(-1, "error");
+		}
+	}
+
+}

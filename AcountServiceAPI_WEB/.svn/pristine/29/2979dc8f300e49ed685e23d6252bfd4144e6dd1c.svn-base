@@ -1,0 +1,59 @@
+package trong.lixco.com.util.rq;
+
+
+
+
+import io.jsonwebtoken.Jwts;
+import java.io.IOException;
+import java.util.ArrayList;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ *
+ * @author hp
+ */
+@WebFilter("/api/*")
+public class AuthorizationFilter implements Filter {
+
+    @Override
+    public void init(FilterConfig fc) throws ServletException {
+
+    }
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+        String header = request.getHeader(SecurityConstanst.HEADER_STRING);
+        if (header == null || !header.startsWith(SecurityConstanst.TONKEN_PREFIX)) {
+            chain.doFilter(request, response);
+            return;
+        }
+        String tonken = request.getHeader(SecurityConstanst.HEADER_STRING);
+        try {
+            String user = Jwts.parser().setSigningKey(SecurityConstanst.SECRET)
+                    .parseClaimsJws(tonken.replace(SecurityConstanst.TONKEN_PREFIX, ""))
+                    .getBody().get("user", String.class);
+
+        } catch (Exception e) {
+            CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+            String content=CommonModel.toJson(-1, "Tonken invalid", "");
+            CommonModel.out(content, response);
+            return;
+        }
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    public void destroy() {
+
+    }
+
+}

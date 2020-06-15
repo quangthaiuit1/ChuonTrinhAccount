@@ -1,0 +1,100 @@
+package trong.lixco.com.util.rq;
+
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+
+import java.io.IOException;
+import java.sql.Date;
+
+import javax.ejb.EJB;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import trong.lixco.com.entity.Account;
+import trong.lixco.com.impl.ImplAccount;
+import trong.lixco.com.util.Encode;
+
+import com.google.gson.JsonObject;
+
+@WebFilter("/api/login/*")
+public class AuthenticateFilter implements Filter {
+
+	@EJB
+	private ImplAccount accountService;
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain arg2)
+			throws IOException, ServletException {
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+		// kiem tra co phai post k
+		if (request.getMethod().equalsIgnoreCase("POST")) {
+			try {
+				String userName = (String) Encode.fromString(request.getParameter("user"));
+				String password = (String) Encode.fromString(request.getParameter("pass"));
+				String brand = request.getParameter("brand");
+				accountService.setDatabase(brand);
+				// kiem tra pass va user
+				Account account = accountService.find_User_Pass(userName, password);
+				if (account != null) {
+					JsonObject obj = new JsonObject();
+					obj.addProperty("user", account.getUserName());
+					obj.addProperty("userid", account.getId());
+					obj.addProperty("exp",
+							new Date(System.currentTimeMillis() + SecurityConstanst.EXPIRATION_TIME).getTime());
+					String pay = JsonParserUtil.getGson().toJson(obj);
+					try {
+						String tonken = Jwts.builder().setPayload(pay)
+								.signWith(SignatureAlgorithm.HS256, SecurityConstanst.SECRET).compact();
+						CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+						response.addHeader(SecurityConstanst.HEADER_STRING, SecurityConstanst.TONKEN_PREFIX + tonken);
+						JsonObject j=new JsonObject();
+						j.addProperty("account_id",account.getId());
+						j.addProperty("brand",brand);
+						String content =CommonService.FormatResponse(0,"", j);
+						CommonModel.out(content, response);
+					} catch (Exception e) {
+						String content = CommonModel.toJson(-2, "Exception tonken!.", "");
+						CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+						CommonModel.out(content, response);
+					}
+				} else {
+					CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+					String content = CommonModel.toJson(-2, "Tên đăng nhập hoặc mật khẩu không đúng!.", "");
+					CommonModel.out(content, response);
+					return;
+				}
+			} catch (Exception e) {
+				String content = CommonModel.toJson(-2, "Exception throw!", "");
+				CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+				CommonModel.out(content, response);
+			}
+		} else {
+			String content = CommonModel.toJson(-2, "not support http method", "");
+			CommonModel.prepareHeader(response, CommonModel.HEADER_JS);
+			CommonModel.out(content, response);
+			return;
+		}
+
+	}
+
+	@Override
+	public void init(FilterConfig arg0) throws ServletException {
+		// TODO Auto-generated method stub
+
+	}
+
+}

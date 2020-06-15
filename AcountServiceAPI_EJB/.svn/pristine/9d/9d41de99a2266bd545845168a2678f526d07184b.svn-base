@@ -1,0 +1,26 @@
+package trong.lixco.com.impl;
+
+import java.util.List;
+
+import trong.lixco.com.entity.Department;
+import trong.lixco.com.entity.Member;
+
+public interface ImplMemberPublic {
+	Member findId(String nameDB,long id);
+
+	List<Member> findAll(String nameDB);
+
+	List<Member> findSearch(String nameDB,String searchText, String[] params);
+	List<Member> findSearchWarehouse(String nameDB,String searchText, String[] params, Boolean stocker);
+
+	Member create(String nameDB,Member member);
+
+	Member update(String nameDB,Member member);
+
+	boolean delete(String nameDB,Member member);
+
+	Member findLike(String nameDB,String param, String value);
+	Member findByCode(String nameDB,String value);
+
+	List<Member> findByDepartment(String nameDB,Department department);
+}

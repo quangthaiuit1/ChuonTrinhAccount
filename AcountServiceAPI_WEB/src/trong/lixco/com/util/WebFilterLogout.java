@@ -1,0 +1,73 @@
+package trong.lixco.com.util;
+
+import java.io.IOException;
+
+import javax.ejb.EJB;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import trong.lixco.com.entity.Account;
+import trong.lixco.com.impl.ImplAccount;
+
+@javax.servlet.annotation.WebFilter("/logout/*")
+public class WebFilterLogout implements Filter {
+	@EJB
+	private ImplAccount accountService;
+
+	@Override
+	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException,
+			IOException {
+		HttpServletRequest request = (HttpServletRequest) req;
+		HttpServletResponse response = (HttpServletResponse) res;
+		HttpSession session = request.getSession(false);
+		boolean status = false;
+		try {
+			String urlct = (String) session.getAttribute("urlct");
+			System.out.println(urlct);
+			if (urlct != null) {
+				status=true;
+				urlct=urlct.replace("index.htm", "");
+				response.sendRedirect(urlct+"logout/");
+			}
+		} catch (Exception e) {
+		}
+		
+		if (!status) {
+			try {
+				Account account = (Account) session.getAttribute("account");
+				if (account != null) {
+					Account acc = accountService.findById(account.getId());
+					acc.setOnline(false);
+					accountService.update(acc);
+					account = null;
+				}
+				session.invalidate();
+				System.out.println("Logout từ account manager");
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			String loginURL = request.getContextPath() + "/index.jsf";
+			response.sendRedirect(loginURL);
+		}
+
+	}
+
+	@Override
+	public void destroy() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void init(FilterConfig arg0) throws ServletException {
+		// TODO Auto-generated method stub
+
+	}
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<ui:composition>
+	<p:dialog widgetVar="dialogcreate" id="dialogcreateid" modal="true"
+		resizable="false" width="400" closeOnEscape="true"
+		header="Chi tiết phòng ban">
+		<br />
+		<h:form id="formdialogcreate">
+			<p:fieldset id="FStq" styleClass="group ">
+				<p:focus context="formdialogcreate" />
+				<h:panelGrid columns="1" id="infoId" cellpadding="5"
+					style="width:330px; float:left"
+					columnClasses="thirty-percent, seven-percent">
+					<p:outputLabel value="Mã phòng ban" for="codem" />
+					<p:inputText styleClass="inputwidthonehundresspercent" id="codem"
+						required="true" requiredMessage="Điền dầy đủ thông tin!"
+						value="#{deparmentBean.department.code}" />
+					<p:outputLabel value="Tên phòng ban" for="name" />
+					<p:inputText value="#{deparmentBean.department.name}"
+						required="true" id="name" requiredMessage="Điền dầy đủ thông tin!"
+						styleClass="inputwidthonehundresspercent" />
+					<p:outputLabel value="Ghi chú" />
+					<p:inputTextarea placeholder="Mô tả..." cols="24" rows="4"
+						value="#{deparmentBean.department.note}" />
+					<h:panelGrid columns="2" styleClass="noneformmat">
+						<p:selectBooleanCheckbox value="#{deparmentBean.department.cnbd}" />
+						<p:outputLabel value="Chi nhánh binh dương" />
+					</h:panelGrid>
+				</h:panelGrid>
+				<div style="clear: both;"></div>
+				<br />
+				<p:commandButton value="Lưu/Cập nhật" id="save" icon="ui-icon-disk"
+					styleClass="greenbutton"
+					update=":messages,:formmain,:formdialogcreate"
+					actionListener="#{deparmentBean.createOrUpdate()}" />
+				<p:commandButton value="Tạo mới" action="#{deparmentBean.reset()}"
+					update=":formdialogcreate" process="@this" />
+			</p:fieldset>
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

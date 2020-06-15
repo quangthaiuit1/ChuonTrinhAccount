@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	<ui:define name="content">
+		<h3 style="margin: 0px">Cài đặt quyền cho User</h3>
+		<p:separator />
+		<h:form id="menuformid">
+			<h:panelGrid columns="2" style="width:100%;" columnClasses="w50,w50">
+				<h:panelGrid columns="1" style="width:100%">
+					<p:panel header="Chương trình">
+						<p:dataTable value="#{menuBean.programs}" lazy="true"
+							scrollable="true" scrollHeight="200" rowKey="#{item.id}"
+							selectionMode="single"
+							selection="#{relationshipRoleAccBean.program}"
+							resizableColumns="true" var="item">
+							<p:ajax event="rowSelect"
+								listener="#{relationshipRoleAccBean.ajax_selectProgram()}"
+								update="menuformid:preview" />
+							<p:column headerText="Chương trình">
+								<h:outputText value="#{item.fullname}" />
+							</p:column>
+
+							<f:facet name="footer">
+								<div style="clear: both;" />
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+					<p:panel header="Phòng ban">
+						<p:dataTable value="#{relationshipRoleAccBean.departments}"
+							rowKey="#{item.id}"
+							selection="#{relationshipRoleAccBean.selectDep}"
+							scrollable="true" selectionMode="single" scrollHeight="400"
+							sortBy="#{item.showAllNameDepartFull()}" var="item">
+							<p:ajax event="rowSelect"
+								listener="#{relationshipRoleAccBean.ajax_selectDeparment()}"
+								update="menuformid:datamemid" />
+							<p:column headerText="ID" style="width:30px">
+								<h:outputText value="#{item.id}" />
+							</p:column>
+							<p:column headerText="Mã" style="width:50px;text-align:center">
+								<h:outputText value="#{item.code}" />
+							</p:column>
+							<p:column headerText="Tên phòng ban"
+								sortBy="#{item.showAllNameDepart()}">
+								<h:outputText value="#{item.showAllNameDepart()}" escape="false"
+									style="font-size:#{(1.4-(item.levelDep.level*0.1))}em;font-weight:#{item.levelDep.level==0||item.levelDep.level==1||item.levelDep.level==2?'bold':''};color:#{item.levelDep.level==0?'red':(item.levelDep.level==1?'#0624ba':'')}" />
+							</p:column>
+							<f:facet name="footer">
+								<div style="clear: both;" />
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+				</h:panelGrid>
+				<h:panelGrid columns="1" style="width:100%;">
+					<p:panel header="Quyền" id="preview">
+						<p:dataTable value="#{relationshipRoleAccBean.roles}"
+							rowKey="#{item.id}" scrollable="true" scrollHeight="200"
+							selection="#{relationshipRoleAccBean.selectRoles}" var="item">
+							<p:column selectionMode="multiple"
+								style="width:16px;text-align:center" />
+							<p:column headerText="Quyền" style="width:100px">
+								<h:outputText value="#{item.name}" />
+							</p:column>
+							<p:column headerText="Mô tả">
+								<h:outputText value="#{item.description}" />
+							</p:column>
+							<p:column headerText="Chi tiết"
+								style="width:50px; text-align:center">
+								<p:commandLink update=":detailroleid"
+									oncomplete="PF('detailRole').show();"
+									actionListener="#{relationshipRoleAccBean.detailRole(item)}">
+									<h:outputText value="Xem"
+										style="font-style: italic;color: #ff9800;" />
+								</p:commandLink>
+							</p:column>
+							<f:facet name="footer">
+								<div style="clear: both;" />
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+					<p:panel header="Nhân viên">
+						<p:dataTable value="#{relationshipRoleAccBean.accounts}"
+							id="datamemid" scrollHeight="400" selectionMode="single"
+							rowKey="#{item.id}" scrollable="true"
+							selection="#{relationshipRoleAccBean.selectAcc}" var="item">
+							<p:ajax event="rowSelect"
+								listener="#{relationshipRoleAccBean.ajax_selectMember()}"
+								update="menuformid:preview" />
+							<p:column headerText="Mã nhân viên" style="width:100px">
+								<h:outputText value="#{item.member.code}" />
+							</p:column>
+							<p:column headerText="Tên nhân viên">
+								<h:outputText value="#{item.member.name}" />
+							</p:column>
+							<f:facet name="footer">
+								<div style="clear: both;" />
+							</f:facet>
+						</p:dataTable>
+					</p:panel>
+				</h:panelGrid>
+			</h:panelGrid>
+			<p:separator />
+			<h:panelGrid columns="2">
+				<p:commandButton value="Lưu/Cập nhật"
+					action="#{relationshipRoleAccBean.saveOrUpdate()}"
+					update=":messages,:menuformid" />
+			</h:panelGrid>
+		</h:form>
+		<ui:include src="/pages/caidatquyenchouser/Chitietquyen.xhtml" />
+	</ui:define>
+</ui:composition>

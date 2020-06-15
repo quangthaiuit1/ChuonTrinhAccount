@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	<ui:define name="content">
+		<h3 style="margin: 0px">Sao lưu dữ liệu</h3>
+		<p:separator />
+		<h:form id="menuformid" onclick="closeDialog()">
+			<p:fieldset id="overview" style="width: 70%;margin:auto">
+				<h:panelGrid columns="2">
+					<p:outputLabel value="Tên chương trình" />
+					<p:selectOneMenu value="#{backupRestore.systemconfig.program}"
+						converter="abstractConverter" effect="fade" var="t"
+						styleClass="seOnMe95" filter="true" filterFunction="customFilter"
+						filterMatchMode="custom">
+						<p:ajax listener="#{backupRestore.ajax_program()}"
+							update="menuformid" />
+						<f:selectItems value="#{menuBean.programs}" var="theme"
+							itemLabel="#{theme.fullname}" itemValue="#{theme}" />
+						<p:column>
+							<h:outputText value="#{t.fullname}" />
+						</p:column>
+					</p:selectOneMenu>
+				</h:panelGrid>
+				<p:separator />
+				<h:panelGrid columns="2"
+					columnClasses="seven-percent-percent,thirty-percent">
+					<p:fieldset styleClass="group">
+						<h:form id="infor">
+							<h:panelGrid columns="2" style="width: 530px;"
+								columnClasses="thirty-percent,seven-percent-percent">
+								<h:outputText value="Đường dẫn MySQL" />
+								<p:inplace effectSpeed="fast" event="dblclick">
+									<p:inputText style="color:red"
+										value="#{backupRestore.systemconfig.pathMySQL}"
+										styleClass="inputwidthonehundresspercent notUpCa" />
+								</p:inplace>
+								<h:outputText value="Tên đăng nhập(MySQL)" />
+								<p:inplace effectSpeed="fast" event="dblclick"
+									label="**********">
+									<p:inputText value="#{backupRestore.systemconfig.userName}"
+										styleClass="inputwidthonehundresspercent notUpCa" />
+								</p:inplace>
+								<h:outputText value="Mật khẩu(MySQL)" />
+								<p:inplace effectSpeed="fast" event="dblclick" styleClass="pass"
+									label="**********">
+									<p:password value="#{backupRestore.systemconfig.password}"
+										redisplay="true"
+										styleClass="inputwidthonehundresspercent notUpCa" />
+								</p:inplace>
+								<h:outputText value="Tên CSDL" />
+								<p:panel id="listdatabasename">
+									<ui:repeat var="item"
+										value="#{backupRestore.systemconfig.databaseNames}"
+										varStatus="status">
+										<p:inplace effectSpeed="fast" event="dblclick"
+											label="**********">
+											<p:inputText value="#{item.name}"
+												styleClass="inputwidthonehundresspercent notUpCa" />
+										</p:inplace>
+										<p:commandLink value="Xoá"
+											update="menuformid:infor:listdatabasename"
+											style="margin-left:10px; font-size: 12px; font-style:italic"
+											actionListener="#{backupRestore.delete_databaseName(item)}" />
+										<br />
+									</ui:repeat>
+									<p:inputText style="width: 150px;margin-right: 10px;height: 12px;"
+										 value="#{backupRestore.databaseName.name}" />
+									<p:commandButton value="Lưu"
+										update="menuformid:infor:listdatabasename,:formdialogcreate"
+										actionListener="#{backupRestore.add_databaseName()}" />
+								</p:panel>
+								<h:outputText value="Đường dẫn lưu file" />
+								<p:inplace effectSpeed="fast" event="dblclick">
+									<p:inputText
+										value="#{backupRestore.systemconfig.pathSaveDatabase}"
+										styleClass="inputwidthonehundresspercent notUpCa" />
+								</p:inplace>
+							</h:panelGrid>
+
+							<p:commandButton value="Lưu/Cập nhật"
+								style="margin-left: auto;margin-right: auto; margin-top:10px"
+								action="#{backupRestore.saveConfigSystem}"
+								update="menuformid,:messages" icon="ui-icon-disk">
+							</p:commandButton>
+						</h:form>
+					</p:fieldset>
+					<p:panel>
+						<p:fieldset style="border:0" styleClass="group">
+							<h:form id="informationbatch">
+								<h:panelGrid columns="1" style="margin-left:20px;">
+									<p:commandButton value="Backup ngay bây giờ"
+										style="width:100%;margin-top:10px" process="@this"
+										action="#{backupRestore.backupNow}" update=":messages"
+										icon="ui-icon-refresh">
+									</p:commandButton>
+									<p:commandButton value="Danh sách file CSDL"
+										style="width:100%;margin-top:10px" process="@this"
+										action="#{backupRestore.showListFile}" update=":formListFile"
+										oncomplete="PF('listFile').show();"
+										icon="ui-icon-arrowthick-1-s">
+									</p:commandButton>
+								</h:panelGrid>
+							</h:form>
+						</p:fieldset>
+					</p:panel>
+				</h:panelGrid>
+			</p:fieldset>
+			<p:fieldset id="detail" style="width:70%;margin:auto"
+				styleClass="group">
+				<h:form id="detailResultPageId" style="margin-top: 4px;">
+					<h:panelGrid columns="10" cellpadding="8">
+						<h:outputText value="Năm:" />
+						<p:inputText value="#{backupRestore.timeBackup.year}" size="8"
+							style="text-align:center" />
+						<h:outputText value="Tháng:" />
+						<p:inputText value="#{backupRestore.timeBackup.month}" size="8"
+							style="text-align:center" />
+						<h:outputText value="Ngày(tháng):" />
+						<p:inputText value="#{backupRestore.timeBackup.dayOfMonth}"
+							size="8" style="text-align:center" />
+						<h:outputText value="Giờ" />
+						<p:inputText value="#{backupRestore.timeBackup.hour}" size="8"
+							style="text-align:center" />
+						<h:outputText value="Phút" />
+						<p:inputText value="#{backupRestore.timeBackup.minute}" size="8"
+							style="text-align:center" />
+					</h:panelGrid>
+					<p:separator />
+					<p:commandButton value="Lưu/Cập nhật"
+						style="margin-left:45%; margin-top:10px" icon="ui-icon-disk"
+						process="@form" action="#{backupRestore.saveBackupAutomatic}"
+						update=":messages">
+					</p:commandButton>
+					<div style="clear: both; margin-top: 10px">
+						<h:panelGrid columns="1">
+							<h:outputText value="Ghi chú:"
+								style="font-style: italic;text-decoration: underline;" />
+							<h:outputText styleClass="margin-left:10px"
+								value="-	Cài đặt Backup tự động cho tất cả cơ sở dữ liệu." />
+							<h:outputText styleClass="margin-left:10px"
+								value="-	Không điền ký tự, các số ít hơn hoặc vược quá (ngày, tháng, năm,..)." />
+							<h:outputText styleClass="margin-left:10px"
+								value="-	Ký tự (*) không quy định thời gian. " />
+						</h:panelGrid>
+					</div>
+				</h:form>
+			</p:fieldset>
+		</h:form>
+		<p:dialog widgetVar="listFile" header="Danh sách file backup"
+			width="700" showEffect="slide" hideEffect="slide" modal="true">
+			<h:form id="formListFile">
+				<p:dataTable var="item" value="#{backupRestore.nameFiles}"
+					id="tabledetail" paginator="true" rows="15" widgetVar="datatb"
+					rowsPerPageTemplate="10,15,20,25" paginatorPosition="bottom">
+					<p:column style="width:7%">
+						<p:commandButton ajax="false"
+							actionListener="#{backupRestore.download(item)}"
+							onclick="PrimeFaces.monitorDownload(stop);"
+							icon="ui-icon-arrowthick-1-s">
+							<p:fileDownload value="#{backupRestore.file}" />
+						</p:commandButton>
+					</p:column>
+					<p:column style="width:15%"
+						rendered="#{backupRestore.status == false}">
+						<p:commandButton ajax="false" value="Restore"
+							rendered="#{authorizationManager.readOnly==false}"
+							actionListener="#{backupRestore.restore(item)}">
+						</p:commandButton>
+					</p:column>
+					<p:column sortBy="#{item}" headerText="Tên file">
+						<h:outputText value="#{item}" style="color: #0000FF" />
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</p:dialog>
+		<p:dialog widgetVar="dialogcreate" id="dialogcreateid"
+			showHeader="false">
+			<h:form id="formdialogcreate">
+				<h:panelGrid columns="2" cellpadding="5">
+
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

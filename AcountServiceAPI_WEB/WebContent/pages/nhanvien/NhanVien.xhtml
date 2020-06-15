@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	<ui:define name="content">
+		<h3 style="margin: 0px">Nhân viên</h3>
+		<p:separator />
+		<h:form id="formmain">
+			<h:panelGrid id="mainGrid" columns="8"
+				style="float:left; margin-bottom:5px">
+				<p:tooltip for="edit" value="Chỉnh sửa nhân viên" />
+				<p:commandButton update=":formdialogcreate"
+					actionListener="#{membersBean.showEdit()}" icon="ui-icon-pencil"
+					onclick="PF('dialogcreate').show();" id="edit" />
+				<p:tooltip for="xoact" value="Xoá nhân viên" />
+				<p:commandButton icon="ui-icon-trash" id="xoact"
+					update=":messages,:formmain" process="@this"
+					action="#{membersBean.deleteMember()}">
+					<p:confirm icon="ui-icon-alert" />
+				</p:commandButton>
+				<p:commandButton value="Tìm kiếm " id="idorder"
+					styleClass="greenbutton" />
+				<p:commandButton value="Đồng bộ từ trung tâm" icon="ui-icon-refresh"  action="#{membersBean.syncCenter()}"/>
+				<p:overlayPanel id="imagePanel" for="idorder" hideEffect="fade">
+					<h:panelGrid columns="1" style="width:400px">
+						<p:selectOneMenu value="#{membersBean.departmentS}"
+							converter="abstractConverter" panelStyle="width:180px"
+							effect="fade" var="t" styleClass="seOnMe95" filter="true"
+							filterMatchMode="startsWith">
+							<f:selectItem itemValue="#{null}" itemLabel="--TẤT CẢ--" />
+							<f:selectItems value="#{membersBean.departments}" var="theme"
+								itemLabel="#{theme.name}" itemValue="#{theme}" />
+							<p:column>
+								<h:outputText value="#{t.code}" />
+							</p:column>
+							<p:column>
+								<h:outputText value="#{t.name}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:inputText style="width: 300px;"
+							value="#{membersBean.searchText}" id="textparam"
+							placeholder="Mã nhân viên, tên nhân viên" />
+						<p:separator />
+						<p:commandButton value="Tìm" icon="ui-icon-search"
+							styleClass="greenbutton" oncomplete="PF('datatb').clearFilters()"
+							actionListener="#{membersBean.searchItem()}" update="tableid" />
+					</h:panelGrid>
+				</p:overlayPanel>
+			</h:panelGrid>
+			<div style="clear: both;" />
+			<p:dataTable value="#{membersBean.members}"
+				paginatorPosition="bottom" rowsPerPageTemplate="20,40,60"
+				paginator="true" rows="40" rowKey="#{item.id}" id="tableid"
+				selection="#{membersBean.memberEdit}" scrollable="true"
+				selectionMode="single" scrollWidth="1190" scrollHeight="400"
+				widgetVar="datatb" resizableColumns="true" var="item"
+				sortBy="#{item.department.name}"
+				filteredValue="#{membersBean.memberFilters}">
+				<p:ajax event="rowSelect" listener="#{membersBean.showEdit()}" />
+				<p:column headerText="ID" style="width:30px">
+					<h:outputText value="#{item.id}" />
+				</p:column>
+				<p:column headerText="Mã nhân viên" style="width:100px"
+					filterBy="#{item.code}"
+					filterFunction="#{abstractCustomFilter.filterByText}">
+					<h:outputText value="#{item.code}" />
+				</p:column>
+				<p:column headerText="Tên nhân viên" style="width:200px"
+					filterBy="#{item.name}"
+					filterFunction="#{abstractCustomFilter.filterByText}">
+					<h:outputText value="#{item.name}" />
+				</p:column>
+				<p:column headerText="Phòng ban" style="width:300px"
+					filterBy="#{item.department.name}"
+					filterFunction="#{abstractCustomFilter.filterByText}">
+					<h:outputText value="#{item.department.name}" />
+				</p:column>
+				<p:column headerText="Mô tả">
+					<h:outputText value="#{item.note}" />
+				</p:column>
+				<f:facet name="footer">
+					<div style="clear: both;" />
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+		<ui:include src="/pages/nhanvien/TaoMoi.xhtml" />
+	</ui:define>
+
+</ui:composition>

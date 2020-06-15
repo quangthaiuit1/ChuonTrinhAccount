@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	
+	<ui:define name="content">
+	<style>
+.ui-tree {
+	height: 420px !important;
+	width: 800px !important;
+}
+</style>
+		<h3 style="margin: 0px">Danh mục menu</h3>
+		<p:separator />
+		<h:form id="menuformid">
+			<h:panelGrid columns="2" style="width:100%;" columnClasses="w50,w50">
+				<p:panel header="Thông tin" styleClass="panelw100">
+					<h:panelGrid id="info">
+						<p:outputLabel value="Tên chương trình" />
+						<p:selectOneMenu value="#{menuBean.program}"
+							converter="abstractConverter" effect="fade" var="t"
+							styleClass="seOnMe95" filter="true" filterMatchMode="startsWith">
+							<p:ajax listener="#{menuBean.ajax_setupMenu()}"
+								update=":menuformid" />
+							<f:selectItems value="#{menuBean.programs}" var="theme"
+								itemLabel="#{theme.fullname}" itemValue="#{theme}" />
+							<p:column>
+								<h:outputText value="#{t.fullname}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:outputLabel value="Tên hiển thị*" for="tenht" />
+						<p:inputText value="#{menuBean.menu.tenHienThi}" id="tenht">
+							<f:validateRequired />
+						</p:inputText>
+						<p:outputLabel value="Địa chỉ (URL)" />
+						<p:inputText value="#{menuBean.menu.url}" />
+						<p:outputLabel value="Icon" />
+						<h:panelGrid columns="2" styleClass="noneformat"
+							columnClasses="w100">
+							<p:inputText value="#{menuBean.menu.icon}" style="width:95%"
+								id="icon" />
+							<p:commandButton value="?"
+								actionListener="#{menuBean.setupListIcon}" update=":formiconid"
+								oncomplete="PF('dialogFontAwesome').show();" process="@this" />
+						</h:panelGrid>
+						<p:outputLabel value="Menu cha" />
+						<p:selectOneMenu value="#{menuBean.menu.parent}"
+							converter="abstractConverter" panelStyle="width:180px"
+							effect="fade" var="t" styleClass="seOnMe95" filter="true"
+							filterMatchMode="startsWith">
+							<f:selectItem itemLabel="--Select--" itemValue="#{null}" />
+							<f:selectItems value="#{menuBean.menus}" var="theme"
+								itemLabel="#{theme.tenHienThi}" itemValue="#{theme}" />
+							<p:column>
+								<h:outputText value="#{t.tenHienThi}" />
+							</p:column>
+						</p:selectOneMenu>
+						<p:outputLabel value="Ghi chú" />
+						<p:inputTextarea placeholder="Mô tả..." cols="24" rows="4"
+							value="#{menuBean.menu.moTa}" />
+					</h:panelGrid>
+					<p:separator />
+					<p:commandButton value="Lưu/Cập nhật"
+						action="#{menuBean.createOrUpdate()}" process="@form"
+						update="messages,:menuformid:treemenu" />
+					<p:commandButton value="Đọc file excel" immediate="true"
+						action="#{applicationBean.readData()}" update=":messages" />
+					<p:commandButton value="Tạo mới" action="#{menuBean.reset()}"
+						update=":menuformid" />
+				</p:panel>
+				<p:panel header="Hiển thị trước" id="preview"
+					style=" height:500px;">
+					<p:tree value="#{menuBean.root}" var="node" selectionMode="single"
+						 binding="#{menuBean.tree}" highlight="true"
+						dynamic="true" orientation="horizontal" dragMode="true"
+						id="treemenu" animate="toggle"
+						selection="#{menuBean.selectedNode}">
+						<p:ajax event="select" update=":menuformid:info"
+							listener="#{menuBean.displayMenu}" />
+						<p:treeNode>
+							<h:outputText value="#{node}" />
+						</p:treeNode>
+					</p:tree>
+					<p:contextMenu for="treemenu">
+						<p:menuitem value="Xoá" process="preview"
+							oncomplete="removeNode()" icon="ui-icon-close" />
+					</p:contextMenu>
+				</p:panel>
+			</h:panelGrid>
+		</h:form>
+		<p:dialog widgetVar="dialogFontAwesome" header="Chọn icon"
+			height="400">
+			<h:form id="formiconid">
+				<h:panelGrid columns="4">
+
+					<c:forEach var="item" items="#{menuBean.icons}" begin="0" end="147">
+						<p:commandLink actionListener="#{menuBean.setupicon(item)}"
+							update=":menuformid:icon" ajax="true">
+							<h:panelGrid columns="2" columnClasses="w30p">
+								<p:outputLabel styleClass="#{item}" />
+								<p:outputLabel value="#{item}" />
+							</h:panelGrid>
+						</p:commandLink>
+
+					</c:forEach>
+					<c:forEach var="item" items="#{menuBean.icons}" begin="148"
+						end="295">
+
+						<p:commandLink actionListener="#{menuBean.setupicon(item)}"
+							update=":menuformid:icon" ajax="true">
+							<h:panelGrid columns="2" columnClasses="w30p">
+								<p:outputLabel styleClass="#{item}" />
+								<p:outputLabel value="#{item}" />
+							</h:panelGrid>
+						</p:commandLink>
+
+					</c:forEach>
+					<c:forEach var="item" items="#{menuBean.icons}" begin="296"
+						end="441">
+						<p:commandLink actionListener="#{menuBean.setupicon(item)}"
+							update=":menuformid:icon" ajax="true">
+							<h:panelGrid columns="2" columnClasses="w30p">
+								<p:outputLabel styleClass="#{item}" />
+								<p:outputLabel value="#{item}" />
+							</h:panelGrid>
+						</p:commandLink>
+					</c:forEach>
+					<c:forEach var="item" items="#{menuBean.icons}" begin="442"
+						end="588">
+						<p:commandLink actionListener="#{menuBean.setupicon(item)}"
+							update=":menuformid:icon" ajax="true">
+							<h:panelGrid columns="2" columnClasses="w30p">
+								<p:outputLabel styleClass="#{item}" />
+								<p:outputLabel value="#{item}" />
+							</h:panelGrid>
+						</p:commandLink>
+					</c:forEach>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

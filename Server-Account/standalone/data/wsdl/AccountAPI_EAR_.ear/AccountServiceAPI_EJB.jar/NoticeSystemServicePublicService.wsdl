@@ -1,0 +1,366 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://publics.service.com.lixco.trong/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="NoticeSystemServicePublicService" targetNamespace="http://publics.service.com.lixco.trong/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://publics.service.com.lixco.trong/" elementFormDefault="unqualified" targetNamespace="http://publics.service.com.lixco.trong/" version="1.0">
+
+  <xs:element name="createOrUpdate" type="tns:createOrUpdate"/>
+
+  <xs:element name="createOrUpdateResponse" type="tns:createOrUpdateResponse"/>
+
+  <xs:element name="delete" type="tns:delete"/>
+
+  <xs:element name="deleteResponse" type="tns:deleteResponse"/>
+
+  <xs:element name="findAll" type="tns:findAll"/>
+
+  <xs:element name="findAllResponse" type="tns:findAllResponse"/>
+
+  <xs:element name="findByCode" type="tns:findByCode"/>
+
+  <xs:element name="findByCodeResponse" type="tns:findByCodeResponse"/>
+
+  <xs:element name="findId" type="tns:findId"/>
+
+  <xs:element name="findIdResponse" type="tns:findIdResponse"/>
+
+  <xs:element name="findSearch" type="tns:findSearch"/>
+
+  <xs:element name="findSearchResponse" type="tns:findSearchResponse"/>
+
+  <xs:complexType name="findId">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="noticeSystem">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="content" type="xs:string"/>
+          <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="member" type="tns:member"/>
+          <xs:element minOccurs="0" name="title" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="createdUser" type="xs:string"/>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element minOccurs="0" name="modifiedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="select" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="department">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="cnbd" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="member">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="account" type="tns:account"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="memberDetail" type="tns:memberDetail"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="account">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="member" type="tns:member"/>
+          <xs:element name="notice" type="xs:boolean"/>
+          <xs:element name="online" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="password" type="xs:string"/>
+          <xs:element minOccurs="0" name="privateConfig" type="tns:privateConfig"/>
+          <xs:element minOccurs="0" name="userName" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="privateConfig">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="decimalNumber" type="xs:int"/>
+          <xs:element minOccurs="0" name="decimalPattent" type="xs:string"/>
+          <xs:element minOccurs="0" name="decimalSeparator" type="xs:string"/>
+          <xs:element minOccurs="0" name="pattentDate" type="xs:string"/>
+          <xs:element minOccurs="0" name="thousandSeparator" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="memberDetail">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="congviec" type="xs:string"/>
+          <xs:element minOccurs="0" name="daotao" type="xs:string"/>
+          <xs:element minOccurs="0" name="diachi" type="xs:string"/>
+          <xs:element minOccurs="0" name="dienbienluong" type="xs:string"/>
+          <xs:element minOccurs="0" name="hopdong" type="xs:string"/>
+          <xs:element minOccurs="0" name="mahoso" type="xs:string"/>
+          <xs:element minOccurs="0" name="masothue" type="xs:string"/>
+          <xs:element minOccurs="0" name="ngaycap" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngaygiahanhopdong" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngayketthuchopdong" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngaykyhopdong" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngaynghi" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngaysinh" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="ngayvao" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="noicap" type="xs:string"/>
+          <xs:element minOccurs="0" name="noisinh" type="xs:string"/>
+          <xs:element minOccurs="0" name="phai" type="xs:string"/>
+          <xs:element minOccurs="0" name="phep" type="xs:string"/>
+          <xs:element minOccurs="0" name="phucap" type="xs:string"/>
+          <xs:element minOccurs="0" name="sobaohiem" type="xs:string"/>
+          <xs:element minOccurs="0" name="sochungminh" type="xs:string"/>
+          <xs:element minOccurs="0" name="sodienthoai" type="xs:string"/>
+          <xs:element minOccurs="0" name="sotuoi" type="xs:string"/>
+          <xs:element minOccurs="0" name="tenkhoi" type="xs:string"/>
+          <xs:element minOccurs="0" name="thamnien" type="xs:string"/>
+          <xs:element minOccurs="0" name="trinhdo" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findAll">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findAllResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="delete">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findSearch">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="arg1" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findSearchResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createOrUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createOrUpdateResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByCode">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByCodeResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findId">
+    <wsdl:part element="tns:findId" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAll">
+    <wsdl:part element="tns:findAll" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="delete">
+    <wsdl:part element="tns:delete" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllResponse">
+    <wsdl:part element="tns:findAllResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByCodeResponse">
+    <wsdl:part element="tns:findByCodeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createOrUpdateResponse">
+    <wsdl:part element="tns:createOrUpdateResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findSearchResponse">
+    <wsdl:part element="tns:findSearchResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="deleteResponse">
+    <wsdl:part element="tns:deleteResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findSearch">
+    <wsdl:part element="tns:findSearch" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createOrUpdate">
+    <wsdl:part element="tns:createOrUpdate" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByCode">
+    <wsdl:part element="tns:findByCode" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findIdResponse">
+    <wsdl:part element="tns:findIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="NoticeSystemServicePublic">
+    <wsdl:operation name="findId">
+      <wsdl:input message="tns:findId" name="findId">
+    </wsdl:input>
+      <wsdl:output message="tns:findIdResponse" name="findIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findAll">
+      <wsdl:input message="tns:findAll" name="findAll">
+    </wsdl:input>
+      <wsdl:output message="tns:findAllResponse" name="findAllResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="delete">
+      <wsdl:input message="tns:delete" name="delete">
+    </wsdl:input>
+      <wsdl:output message="tns:deleteResponse" name="deleteResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findSearch">
+      <wsdl:input message="tns:findSearch" name="findSearch">
+    </wsdl:input>
+      <wsdl:output message="tns:findSearchResponse" name="findSearchResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createOrUpdate">
+      <wsdl:input message="tns:createOrUpdate" name="createOrUpdate">
+    </wsdl:input>
+      <wsdl:output message="tns:createOrUpdateResponse" name="createOrUpdateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByCode">
+      <wsdl:input message="tns:findByCode" name="findByCode">
+    </wsdl:input>
+      <wsdl:output message="tns:findByCodeResponse" name="findByCodeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="NoticeSystemServicePublicServiceSoapBinding" type="tns:NoticeSystemServicePublic">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="delete">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="delete">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="deleteResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findAll">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findAll">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findAllResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findId">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findId">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findSearch">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findSearch">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findSearchResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="createOrUpdate">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="createOrUpdate">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createOrUpdateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByCode">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findByCode">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findByCodeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="NoticeSystemServicePublicService">
+    <wsdl:port binding="tns:NoticeSystemServicePublicServiceSoapBinding" name="NoticeSystemServicePublicPort">
+      <soap:address location="http://localhost:8280/AccountServiceAPI_EJB/NoticeSystemServicePublic"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,496 @@
+package trong.lixco.com.bean;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
+
+import trong.lixco.com.entity.Account;
+import trong.lixco.com.entity.Department;
+import trong.lixco.com.entity.Member;
+import trong.lixco.com.entity.MemberDetail;
+import trong.lixco.com.entity.Program;
+import trong.lixco.com.entity.SingleSignOn;
+import trong.lixco.com.impl.ImplAccount;
+import trong.lixco.com.impl.ImplDepartment;
+import trong.lixco.com.impl.ImplMember;
+import trong.lixco.com.impl.ImplMemberDetail;
+import trong.lixco.com.util.Encode;
+import trong.lixco.com.util.Notify;
+
+@ManagedBean
+@SessionScoped
+public class ApplicationBean {
+	private Notify notify;
+	private Account account;
+	private String username, password;
+	private String nameDB;
+	private Set<Program> programs;
+	private String path;
+	private boolean addressLocal = false;
+
+	@PostConstruct
+	private void init() {
+		checkAddressLocal();
+	}
+
+	@EJB
+	private ImplAccount accountService;
+	@EJB
+	private ImplDepartment departmentService;
+	@EJB
+	private ImplMemberDetail memberDetailService;
+	@EJB
+	private ImplMember memberService;
+
+	public boolean checkAddressLocal() {
+		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		
+		String ipAddress = request.getHeader("X-FORWARDED-FOR");// ip
+		if (ipAddress == null) {
+			ipAddress = request.getRemoteAddr();
+			System.out.println("IP address: " + ipAddress);
+			boolean temp = ipAddress.contains("192.168.");
+			if (temp == false) {
+				temp = ipAddress.contains("127.0.0.1");
+			}
+			addressLocal = temp;
+			return temp;
+		} else {
+			return false;
+		}
+	}
+
+	public void setDatabase() {
+		accountService.setDatabase(nameDB);
+
+	}
+
+	public String getNameDB() {
+		return nameDB;
+	}
+
+	public void setNameDB(String nameDB) {
+		this.nameDB = nameDB;
+	}
+
+	/**
+	 * Compute the hash value to check for "real person" submission.
+	 * 
+	 * @param value
+	 *            the entered value
+	 * @return its hash value
+	 */
+	private String rpHash(String value) {
+		int hash = 5381;
+		if (value != null) {
+			value = value.toUpperCase();
+			for (int i = 0; i < value.length(); i++) {
+				hash = ((hash << 5) + hash) + value.charAt(i);
+			}
+		}
+		return String.valueOf(hash);
+	}
+
+	public void login() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
+		// Kiem tra ma captcha
+		if (addressLocal || rpHash(req.getParameter("defaultReal")).equals(req.getParameter("defaultRealHash"))) {
+			setDatabase();
+			account = accountService.find_User_Pass(username, password);
+			FacesContext context = FacesContext.getCurrentInstance();
+			path = context.getExternalContext().getRequestContextPath();
+			try {
+				if (account != null) {
+					// Lay danh sach chuong trinh user duoc phep truy cap
+					programs = accountService.findProgramByAccount(account);
+					SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd hh:mm");
+					account.setNote("Đăng nhập lúc: "+sf.format(new Date()));
+					account.setOnline(true);
+					context.getExternalContext().getSessionMap().put("account", account);
+					context.getExternalContext().getSessionMap().put("database", nameDB);
+					accountService.update(account);
+					System.out.println("["+account.getUserName()+"] đăng nhập.");
+					context.getExternalContext().redirect(path + "/pages/Start.jsf");
+				} else {
+					notify.error("Sai tên đăng nhập hoặc mật khẩu!");
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+		} else {
+			notify.error("Mã bảo mật không đúng!");
+		}
+
+	}
+
+	public void redirect(String value) {
+		FacesContext context = FacesContext.getCurrentInstance();
+		// Xac dinh tai khoan co duoc phep truy cap vao chuong trinh nay hay
+		// khong
+		Iterator<Program> iterator = programs.iterator();
+		while (iterator.hasNext()) {
+			Program pr = iterator.next();
+			if (value.equals(pr.getName())) {
+				try {
+					if (!value.equals("hethong")) {
+						// Kiem tra server da duoc bat hay chua
+						String url = pr.getuRL();
+						if (addressLocal) {
+							url = pr.getServeraddress() + url;
+						} else {
+							url = pr.getServeraddressPublic() + url;
+						}
+						if (checkServer(url)) {
+							String id = Encode.toString(account.getId());
+							accountService.createSSO(new SingleSignOn(id));
+							String path=url + "?id=" + id + "&database=" + nameDB;
+							context.getExternalContext().redirect(path);
+						} else {
+							context.getExternalContext().redirect("../errorpage.jsf");
+						}
+					} else {
+						String url = pr.getuRL();
+						if (addressLocal) {
+							url = pr.getServeraddress() + url;
+						} else {
+							url = pr.getServeraddressPublic() + url;
+						}
+						context.getExternalContext().redirect(url);
+					}
+				} catch (Exception e) {
+				}
+				break;
+			}
+		}
+	}
+
+	public boolean checkServer(String urlserver) {
+		boolean status = false;
+		try {
+			HttpURLConnection.setFollowRedirects(false);
+			// note : you may also need
+			// HttpURLConnection.setInstanceFollowRedirects(false)
+			HttpURLConnection con = (HttpURLConnection) new URL(urlserver).openConnection();
+			con.setRequestMethod("HEAD");
+			int responseCode = con.getResponseCode();
+			status = (200 <= responseCode && responseCode <= 399);
+		} catch (Exception e) {
+			status = false;
+		}
+		return status;
+	}
+
+	public String redirect() {
+		return "success";
+
+	}
+
+	public void logout() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		context.getExternalContext().getSessionMap().remove("account");
+		String url = context.getExternalContext().getRequestContextPath() + "/index.jsf";
+		try {
+			if (account != null) {
+				Account acc = accountService.findById(account.getId());
+				acc.setOnline(false);
+				accountService.update(acc);
+				account = null;
+			}
+			context.getExternalContext().invalidateSession();
+			context.getExternalContext().redirect(url);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Set<Program> getPrograms() {
+		return programs;
+	}
+
+	public void setPrograms(Set<Program> programs) {
+		this.programs = programs;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public boolean isAddressLocal() {
+		return addressLocal;
+	}
+
+	public void setAddressLocal(boolean addressLocal) {
+		this.addressLocal = addressLocal;
+	}
+
+	public void readData() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		try {
+			FileInputStream excelFileToRead = new FileInputStream("E:\\VDuLieuMoi\\DANHSACHNHANVIEN_CNBN.xls");
+			// Get the workbook instance for XLS file
+			POIFSFileSystem fs = new POIFSFileSystem(excelFileToRead);
+			HSSFWorkbook workbook = new HSSFWorkbook(fs);
+			// Get first sheet from the workbook
+			HSSFSheet sheet = workbook.getSheetAt(0);
+			// Iterate through each rows from first sheet
+			Row row;
+			int tam = -1;
+			// Chay danh sach tu 1 -> dong cuoi cung
+			for (int i = 0; i <= sheet.getLastRowNum(); i++) {
+				row = sheet.getRow(i);
+				if (tam == -1) {
+					// Vi tri bat dau la " Ngay"
+					for (int j = 0; j <= sheet.getLastRowNum(); j++) {
+						try {
+							String a = row.getCell(j).getStringCellValue();
+							if (row.getCell(j).getStringCellValue().equalsIgnoreCase("tenkhoi")) {
+								tam = j;
+								break;
+							}
+						} catch (Exception e) {
+						}
+					}
+				} else {
+					// Bat dau lay gia tri
+					String tenkhoi = null, tendonvi = null, manhanvien = null, tennhanvien = null, phainu = null, ngaysinh = null, noisinh = null, ngayvao = null, danghi = null, ngaynghi = null, phep = null, phucap = null, congviec = null, trinhdo = null, hopdong = null, ngaykyhopdonglan1 = null, ngaygiahanhopdong = null, ngayketthuchopdong = null, thamnien = null, sotuoi = null, diachi = null, dienbienluong = null, daotao = null, ghichu = null, sobhxh = null, cmnd = null, ngaycap = null, noicap = null, masotheu = null, mahoso = null;
+					try {
+						tenkhoi = row.getCell(tam).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						tendonvi = row.getCell(tam + 1).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						manhanvien = row.getCell(tam + 2).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						tennhanvien = row.getCell(tam + 3).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						phainu = row.getCell(tam + 4).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngaysinh = row.getCell(tam + 5).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						noisinh = row.getCell(tam + 6).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngayvao = row.getCell(tam + 7).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						danghi = row.getCell(tam + 8).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngaynghi = row.getCell(tam + 9).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						phep = row.getCell(tam + 10).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						phucap = row.getCell(tam + 11).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						congviec = row.getCell(tam + 12).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						trinhdo = row.getCell(tam + 13).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						hopdong = row.getCell(tam + 14).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngaykyhopdonglan1 = row.getCell(tam + 15).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngaygiahanhopdong = row.getCell(tam + 16).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngayketthuchopdong = row.getCell(tam + 17).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						thamnien = row.getCell(tam + 18).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						sotuoi = row.getCell(tam + 19).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						diachi = row.getCell(tam + 20).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						dienbienluong = row.getCell(tam + 21).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						daotao = row.getCell(tam + 22).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ghichu = row.getCell(tam + 23).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						sobhxh = row.getCell(tam + 24).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						cmnd = row.getCell(tam + 25).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						ngaycap = row.getCell(tam + 26).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						noicap = row.getCell(tam + 27).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						masotheu = row.getCell(tam + 28).getStringCellValue();
+					} catch (Exception e) {
+					}
+					try {
+						mahoso = row.getCell(tam + 29).getStringCellValue();
+					} catch (Exception e) {
+					}
+					SimpleDateFormat sf = new SimpleDateFormat("dd/MM/yyyy");
+					MemberDetail m = new MemberDetail();
+					m.setTenkhoi(tenkhoi);
+					m.setPhai(phainu);
+					try {
+						m.setNgaysinh(sf.parse(ngaysinh));
+					} catch (Exception e) {
+					}
+
+					m.setNoisinh(noisinh);
+					try {
+						m.setNgayvao(sf.parse(ngayvao));
+					} catch (Exception e) {
+					}
+					try {
+						m.setNgaynghi(sf.parse(ngaynghi));
+					} catch (Exception e) {
+					}
+					m.setPhep(phep);
+					m.setPhucap(phucap);
+					m.setCongviec(congviec);
+					m.setTrinhdo(trinhdo);
+					m.setHopdong(hopdong);
+					try {
+						m.setNgaykyhopdong(sf.parse(ngaykyhopdonglan1));
+					} catch (Exception e) {
+					}
+					try {
+						m.setNgaygiahanhopdong(sf.parse(ngaygiahanhopdong));
+					} catch (Exception e) {
+					}
+					try {
+						m.setNgayketthuchopdong(sf.parse(ngayketthuchopdong));
+					} catch (Exception e) {
+					}
+					m.setThamnien(thamnien);
+					m.setSotuoi(sotuoi);
+					m.setDiachi(diachi);
+					m.setDienbienluong(dienbienluong);
+					m.setDaotao(daotao);
+					m.setNote(ghichu);
+					m.setSobaohiem(sobhxh);
+					m.setSochungminh(cmnd);
+					try {
+						m.setNgaycap(sf.parse(ngaycap));
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+					m.setNoicap(noicap);
+					m.setMasothue(masotheu);
+					m.setMahoso(mahoso);
+
+					MemberDetail memberDetail = memberDetailService.create(m);
+					Department department = departmentService.findByCode("name", tendonvi);
+					Member mem = new Member();
+					mem.setCode(manhanvien);
+					mem.setName(tennhanvien);
+					mem.setMemberDetail(memberDetail);
+					mem.setDepartment(department);
+					memberService.create(mem);
+				}
+
+			}
+			notify.success();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+}

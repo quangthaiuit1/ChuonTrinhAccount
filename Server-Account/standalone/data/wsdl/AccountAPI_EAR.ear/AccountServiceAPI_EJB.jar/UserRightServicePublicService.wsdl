@@ -1,0 +1,276 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://publics.service.com.lixco.trong/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="UserRightServicePublicService" targetNamespace="http://publics.service.com.lixco.trong/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://publics.service.com.lixco.trong/" elementFormDefault="unqualified" targetNamespace="http://publics.service.com.lixco.trong/" version="1.0">
+
+  <xs:element name="create" type="tns:create"/>
+
+  <xs:element name="createResponse" type="tns:createResponse"/>
+
+  <xs:element name="findId" type="tns:findId"/>
+
+  <xs:element name="findIdResponse" type="tns:findIdResponse"/>
+
+  <xs:element name="findUserRightByRole" type="tns:findUserRightByRole"/>
+
+  <xs:element name="findUserRightByRoleResponse" type="tns:findUserRightByRoleResponse"/>
+
+  <xs:element name="setDatabase" type="tns:setDatabase"/>
+
+  <xs:element name="setDatabaseResponse" type="tns:setDatabaseResponse"/>
+
+  <xs:element name="update" type="tns:update"/>
+
+  <xs:element name="updateResponse" type="tns:updateResponse"/>
+
+  <xs:complexType name="setDatabase">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="setDatabaseResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findId">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="userRight">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="allow" type="xs:boolean"/>
+          <xs:element name="delete" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="formList" type="tns:formList"/>
+          <xs:element name="insert" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="role" type="tns:role"/>
+          <xs:element name="update" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="createdUser" type="xs:string"/>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element minOccurs="0" name="modifiedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="select" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="formList">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="description" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="program" type="tns:program"/>
+          <xs:element minOccurs="0" name="uRL" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="program">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="description" type="xs:string"/>
+          <xs:element minOccurs="0" name="fullname" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="serveraddress" type="xs:string"/>
+          <xs:element minOccurs="0" name="serveraddressPublic" type="xs:string"/>
+          <xs:element minOccurs="0" name="uRL" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="role">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="description" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="program" type="tns:program"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findUserRightByRole">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:role"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findUserRightByRoleResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="create">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="update">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:userRight"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="updateResponse">
+    <wsdl:part element="tns:updateResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findId">
+    <wsdl:part element="tns:findId" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findUserRightByRoleResponse">
+    <wsdl:part element="tns:findUserRightByRoleResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="create">
+    <wsdl:part element="tns:create" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="createResponse">
+    <wsdl:part element="tns:createResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="update">
+    <wsdl:part element="tns:update" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setDatabase">
+    <wsdl:part element="tns:setDatabase" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findUserRightByRole">
+    <wsdl:part element="tns:findUserRightByRole" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setDatabaseResponse">
+    <wsdl:part element="tns:setDatabaseResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findIdResponse">
+    <wsdl:part element="tns:findIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="UserRightServicePublic">
+    <wsdl:operation name="setDatabase">
+      <wsdl:input message="tns:setDatabase" name="setDatabase">
+    </wsdl:input>
+      <wsdl:output message="tns:setDatabaseResponse" name="setDatabaseResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findId">
+      <wsdl:input message="tns:findId" name="findId">
+    </wsdl:input>
+      <wsdl:output message="tns:findIdResponse" name="findIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findUserRightByRole">
+      <wsdl:input message="tns:findUserRightByRole" name="findUserRightByRole">
+    </wsdl:input>
+      <wsdl:output message="tns:findUserRightByRoleResponse" name="findUserRightByRoleResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="create">
+      <wsdl:input message="tns:create" name="create">
+    </wsdl:input>
+      <wsdl:output message="tns:createResponse" name="createResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <wsdl:input message="tns:update" name="update">
+    </wsdl:input>
+      <wsdl:output message="tns:updateResponse" name="updateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="UserRightServicePublicServiceSoapBinding" type="tns:UserRightServicePublic">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="setDatabase">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="setDatabase">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="setDatabaseResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findId">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findId">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findUserRightByRole">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findUserRightByRole">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findUserRightByRoleResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="create">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="create">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="createResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="update">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="update">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="updateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="UserRightServicePublicService">
+    <wsdl:port binding="tns:UserRightServicePublicServiceSoapBinding" name="UserRightServicePublicPort">
+      <soap:address location="http://localhost:8180/AccountServiceAPI_EJB/UserRightServicePublic"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

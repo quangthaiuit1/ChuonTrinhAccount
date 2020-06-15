@@ -1,0 +1,140 @@
+package trong.lixco.com.bean;
+
+/**
+ * Danh muc menu
+ */
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+
+import trong.lixco.com.entity.Department;
+import trong.lixco.com.impl.ImplDepartment;
+import trong.lixco.com.util.Notify;
+
+@ManagedBean
+@ViewScoped
+public class DeparmentBean {
+	private Notify notify;
+	private List<Department> departments;
+	private Department department;
+	private String searchText;
+	@EJB
+	private ImplDepartment departmentService;
+	private Department departmentEdit;
+
+	@PostConstruct
+	public void init() {
+		department = new Department();
+		departments = departmentService.findAll();
+	}
+
+	/*
+	 * Luu menu moi
+	 */
+	public void createOrUpdate() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		if (department != null) {
+			if (department.getId() == null) {
+				department = departmentService.create(department);
+				departments.add(department);
+			} else {
+				department = departmentService.update(department);
+				int index = departments.indexOf(department);
+				departments.set(index, department);
+			}
+			notify.success();
+		}
+	}
+
+	/*
+	 * Reset lai form tao member (xoa thong tin tren form)
+	 */
+	public void reset() {
+		department = new Department();
+	}
+
+	public void showEdit() {
+		this.department = departmentEdit;
+	}
+
+	/*
+	 * Hien thi member chinh sua
+	 */
+	public void display(Department event) {
+		setDepartment(event);
+	}
+
+	/*
+	 * Xoa member
+	 */
+	public void delete() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		if (departmentEdit != null) {
+			boolean status = departmentService.delete(departmentEdit);
+			if (status) {
+				departments.remove(departmentEdit);
+				notify.success();
+			} else {
+				notify.error();
+			}
+		} else {
+			notify.warning("Chưa chọn nhân viên!");
+		}
+	}
+
+	/*
+	 * Tao nhan vien moi
+	 */
+	public void showNew() {
+		department = new Department();
+	}
+
+	/*
+	 * Tim kiem nhan vien (simple)
+	 */
+	public void searchItem() {
+		departments = departmentService.findSearch(searchText, new String[] { "code", "name"});
+	}
+
+	
+
+	public String getSearchText() {
+		return searchText;
+	}
+
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
+	}
+
+	public List<Department> getDepartments() {
+		return departments;
+	}
+
+	public void setDepartments(List<Department> departments) {
+		this.departments = departments;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public Department getDepartmentEdit() {
+		return departmentEdit;
+	}
+
+	public void setDepartmentEdit(Department departmentEdit) {
+		this.departmentEdit = departmentEdit;
+	}
+
+	
+
+}

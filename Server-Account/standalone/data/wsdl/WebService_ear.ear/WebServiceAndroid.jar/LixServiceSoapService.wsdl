@@ -1,0 +1,476 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://httplixServiceSoap/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="LixServiceSoapService" targetNamespace="http://httplixServiceSoap/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://httplixServiceSoap/" elementFormDefault="unqualified" targetNamespace="http://httplixServiceSoap/" version="1.0">
+
+  <xs:element name="saveShopLix" type="tns:saveShopLix"/>
+
+  <xs:element name="saveShopLixResponse" type="tns:saveShopLixResponse"/>
+
+  <xs:element name="showAllCityCus" type="tns:showAllCityCus"/>
+
+  <xs:element name="showAllCityCusResponse" type="tns:showAllCityCusResponse"/>
+
+  <xs:element name="showAllCountyCus" type="tns:showAllCountyCus"/>
+
+  <xs:element name="showAllCountyCusResponse" type="tns:showAllCountyCusResponse"/>
+
+  <xs:element name="showAllGuildCus" type="tns:showAllGuildCus"/>
+
+  <xs:element name="showAllGuildCusResponse" type="tns:showAllGuildCusResponse"/>
+
+  <xs:element name="showOrderLixByShopLix" type="tns:showOrderLixByShopLix"/>
+
+  <xs:element name="showOrderLixByShopLixResponse" type="tns:showOrderLixByShopLixResponse"/>
+
+  <xs:element name="showWorkFollowByUser" type="tns:showWorkFollowByUser"/>
+
+  <xs:element name="showWorkFollowByUserResponse" type="tns:showWorkFollowByUserResponse"/>
+
+  <xs:element name="showWorkFollowDetailByWorkFollow" type="tns:showWorkFollowDetailByWorkFollow"/>
+
+  <xs:element name="showWorkFollowDetailByWorkFollowResponse" type="tns:showWorkFollowDetailByWorkFollowResponse"/>
+
+  <xs:complexType name="showAllCountyCus">
+    <xs:sequence>
+      <xs:element name="idcity" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showAllCountyCusResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:countyCus"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="countyCus">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="cityCus" type="tns:cityCus"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="createdUser" type="xs:string"/>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element minOccurs="0" name="modifiedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="select" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="cityCus">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="saveShopLix">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="name" type="xs:string"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="idGuildCus" type="xs:long"/>
+      <xs:element name="longitude" type="xs:double"/>
+      <xs:element name="latitude" type="xs:double"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveShopLixResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showAllGuildCus">
+    <xs:sequence>
+      <xs:element name="idcounty" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showAllGuildCusResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:guildCus"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="guildCus">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="countyCus" type="tns:countyCus"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="showWorkFollowDetailByWorkFollow">
+    <xs:sequence>
+      <xs:element name="idworkfollow" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showWorkFollowDetailByWorkFollowResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:workFollowDetailLix"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="workFollowDetailLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="endDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="shopLix" type="tns:shopLix"/>
+          <xs:element minOccurs="0" name="startDate" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="workFollowLix" type="tns:workFollowLix"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="shopLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="addressShop" type="tns:addressShop"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="addressShop">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="guildCus" type="tns:guildCus"/>
+          <xs:element name="latitudeShop" type="xs:double"/>
+          <xs:element name="longitudeShop" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="workFollowLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="content" type="xs:string"/>
+          <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="memberFollow" type="tns:memberLix"/>
+          <xs:element minOccurs="0" name="memberSale" type="tns:memberLix"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="memberLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="accountLix" type="tns:accountLix"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="positionLix" type="tns:positionLix"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="accountLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="password" type="xs:string"/>
+          <xs:element minOccurs="0" name="username" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="positionLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="showOrderLixByShopLix">
+    <xs:sequence>
+      <xs:element name="idshop" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showOrderLixByShopLixResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:orderLix"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="orderLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+          <xs:element name="latitudeOrder" type="xs:double"/>
+          <xs:element name="longitudeOrder" type="xs:double"/>
+          <xs:element minOccurs="0" name="memberLix" type="tns:memberLix"/>
+          <xs:element maxOccurs="unbounded" minOccurs="0" name="orderDetailLixs" nillable="true" type="tns:orderDetailLix"/>
+          <xs:element minOccurs="0" name="shopLix" type="tns:shopLix"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="orderDetailLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="orderLix" type="tns:orderLix"/>
+          <xs:element minOccurs="0" name="productLix" type="tns:productLix"/>
+          <xs:element name="quantity" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="productLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="productCategoryLix" type="tns:productCategoryLix"/>
+          <xs:element minOccurs="0" name="unit" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="productCategoryLix">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="showAllCityCus">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="showAllCityCusResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:cityCus"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showWorkFollowByUser">
+    <xs:sequence>
+      <xs:element name="iduser" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="showWorkFollowByUserResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:workFollowLix"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="showAllGuildCus">
+    <wsdl:part element="tns:showAllGuildCus" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showWorkFollowDetailByWorkFollow">
+    <wsdl:part element="tns:showWorkFollowDetailByWorkFollow" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showAllGuildCusResponse">
+    <wsdl:part element="tns:showAllGuildCusResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showOrderLixByShopLix">
+    <wsdl:part element="tns:showOrderLixByShopLix" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showAllCityCus">
+    <wsdl:part element="tns:showAllCityCus" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showWorkFollowByUser">
+    <wsdl:part element="tns:showWorkFollowByUser" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showAllCountyCus">
+    <wsdl:part element="tns:showAllCountyCus" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveShopLixResponse">
+    <wsdl:part element="tns:saveShopLixResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showOrderLixByShopLixResponse">
+    <wsdl:part element="tns:showOrderLixByShopLixResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showWorkFollowDetailByWorkFollowResponse">
+    <wsdl:part element="tns:showWorkFollowDetailByWorkFollowResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveShopLix">
+    <wsdl:part element="tns:saveShopLix" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showWorkFollowByUserResponse">
+    <wsdl:part element="tns:showWorkFollowByUserResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showAllCountyCusResponse">
+    <wsdl:part element="tns:showAllCountyCusResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="showAllCityCusResponse">
+    <wsdl:part element="tns:showAllCityCusResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="httplixServiceSoap">
+    <wsdl:operation name="showAllCountyCus">
+      <wsdl:input message="tns:showAllCountyCus" name="showAllCountyCus">
+    </wsdl:input>
+      <wsdl:output message="tns:showAllCountyCusResponse" name="showAllCountyCusResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveShopLix">
+      <wsdl:input message="tns:saveShopLix" name="saveShopLix">
+    </wsdl:input>
+      <wsdl:output message="tns:saveShopLixResponse" name="saveShopLixResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showAllGuildCus">
+      <wsdl:input message="tns:showAllGuildCus" name="showAllGuildCus">
+    </wsdl:input>
+      <wsdl:output message="tns:showAllGuildCusResponse" name="showAllGuildCusResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showWorkFollowDetailByWorkFollow">
+      <wsdl:input message="tns:showWorkFollowDetailByWorkFollow" name="showWorkFollowDetailByWorkFollow">
+    </wsdl:input>
+      <wsdl:output message="tns:showWorkFollowDetailByWorkFollowResponse" name="showWorkFollowDetailByWorkFollowResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showOrderLixByShopLix">
+      <wsdl:input message="tns:showOrderLixByShopLix" name="showOrderLixByShopLix">
+    </wsdl:input>
+      <wsdl:output message="tns:showOrderLixByShopLixResponse" name="showOrderLixByShopLixResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showAllCityCus">
+      <wsdl:input message="tns:showAllCityCus" name="showAllCityCus">
+    </wsdl:input>
+      <wsdl:output message="tns:showAllCityCusResponse" name="showAllCityCusResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showWorkFollowByUser">
+      <wsdl:input message="tns:showWorkFollowByUser" name="showWorkFollowByUser">
+    </wsdl:input>
+      <wsdl:output message="tns:showWorkFollowByUserResponse" name="showWorkFollowByUserResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="LixServiceSoapServiceSoapBinding" type="tns:httplixServiceSoap">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="showAllCountyCus">
+      <soap:operation soapAction="showAllCountyCus" style="document"/>
+      <wsdl:input name="showAllCountyCus">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showAllCountyCusResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveShopLix">
+      <soap:operation soapAction="saveShopLix" style="document"/>
+      <wsdl:input name="saveShopLix">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="saveShopLixResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showAllGuildCus">
+      <soap:operation soapAction="showAllGuildCus" style="document"/>
+      <wsdl:input name="showAllGuildCus">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showAllGuildCusResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showWorkFollowDetailByWorkFollow">
+      <soap:operation soapAction="showWorkFollowDetailByWorkFollow" style="document"/>
+      <wsdl:input name="showWorkFollowDetailByWorkFollow">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showWorkFollowDetailByWorkFollowResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showOrderLixByShopLix">
+      <soap:operation soapAction="showOrderLixByShopLix" style="document"/>
+      <wsdl:input name="showOrderLixByShopLix">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showOrderLixByShopLixResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showAllCityCus">
+      <soap:operation soapAction="showAllCityCus" style="document"/>
+      <wsdl:input name="showAllCityCus">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showAllCityCusResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="showWorkFollowByUser">
+      <soap:operation soapAction="showWorkFollowByUser" style="document"/>
+      <wsdl:input name="showWorkFollowByUser">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="showWorkFollowByUserResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="LixServiceSoapService">
+    <wsdl:port binding="tns:LixServiceSoapServiceSoapBinding" name="httplixServiceSoapPort">
+      <soap:address location="http://localhost:8280/WebServiceAndroid/httplixServiceSoap"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<ui:composition>
+	<p:dialog widgetVar="dialogcreate" id="dialogcreateid" modal="true"
+		resizable="false" width="750" closeOnEscape="true"
+		header="Chi tiết nhân viên">
+		<br />
+		<h:form id="formdialogcreate">
+			<p:fieldset id="FStq" styleClass="group ">
+				<p:focus context="formdialogcreate" />
+				<h:panelGrid columns="1" id="infoId" cellpadding="5"
+					style="width:330px; float:left"
+					columnClasses="thirty-percent, seven-percent">
+					<p:outputLabel value="Mã nhân viên" for="codem" />
+					<p:inputText styleClass="inputwidthonehundresspercent" id="codem" readonly="true"
+						required="true" requiredMessage="Điền dầy đủ thông tin!"
+						value="#{membersBean.member.code}" />
+					<p:outputLabel value="Họ tên" for="name" />
+					<p:inputText value="#{membersBean.member.name}" required="true" readonly="true"
+						id="name" requiredMessage="Điền dầy đủ thông tin!"
+						styleClass="inputwidthonehundresspercent" />
+					<p:outputLabel value="Phòng ban" />
+					<p:selectOneMenu value="#{membersBean.member.department}" disabled="true"
+						converter="abstractConverter" panelStyle="width:300px"
+						effect="fade" var="t" styleClass="seOnMe95" filter="true"
+						filterMatchMode="custom" filterFunction="customFilter">
+						<f:selectItems value="#{membersBean.departments}" var="theme"
+							itemLabel="#{theme.name}" itemValue="#{theme}" />
+						<p:column>
+							<h:outputText value="#{t.code}" />
+						</p:column>
+						<p:column>
+							<h:outputText value="#{t.name}" />
+						</p:column>
+					</p:selectOneMenu>
+					<p:outputLabel value="Chữ ký" />
+					<h:panelGrid columns="2"
+						columnClasses="thirty-percent, seven-percent">
+						<p:graphicImage alt="Hình ảnh" cache="false"
+							styleClass="thumbnail" width="80" height="50"
+							style="float: left; padding-right: 10px"
+							value="/ImageServlet/?id=#{membersBean.member.id}" />
+						<p:commandButton value="Tải chữ ký"
+							oncomplete="PF('dialogSign').show();" />
+					</h:panelGrid>
+				</h:panelGrid>
+				<h:panelGrid columns="1" cellpadding="5"
+					style="width:330px; float:right"
+					columnClasses="thirty-percent, seven-percent">
+					<p:outputLabel value="Tên đăng nhập" for="emailm" />
+					<p:inputText value="#{membersBean.account.userName}" id="emailm"
+						styleClass="inputwidthonehundresspercent notUpCa" />
+					<p:outputLabel value="Mật khẩu" for="passm1" />
+					<p:inputText value="#{membersBean.account.password}" id="passm1"
+						styleClass="inputwidthonehundresspercent notUpCa">
+					</p:inputText>
+					<p:outputLabel value="Email"/>
+					<p:inputText value="#{membersBean.member.email}"
+						styleClass="inputwidthonehundresspercent" />
+					<p:selectBooleanCheckbox value="#{membersBean.account.admin}" itemLabel="Tài khoản admin"/>
+					<p:selectBooleanCheckbox value="#{membersBean.member.disable}" itemLabel="Disable"/>
+				</h:panelGrid>
+				<div style="clear: both;" />
+				<br />
+				<p:separator />
+				<p:commandButton value="Lưu/Cập nhật" id="save" icon="ui-icon-disk"
+					styleClass="greenbutton"
+					update=":messages,:formmain,:formdialogcreate"
+					actionListener="#{membersBean.createOrUpdate()}" />
+			</p:fieldset>
+		</h:form>
+	</p:dialog>
+	<p:dialog widgetVar="dialogSign" modal="true" resizable="false"
+		width="550" closeOnEscape="true" header="Chữ ký">
+		<h:form id="bg" enctype="multipart/form-data">
+			<p:fileUpload style="text-align:center"
+				update=":messages,:bg,:formdialogcreate" id="fileupload"
+				dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/"
+				label="Chọn file từ máy tính" cancelLabel="Huỷ"
+				uploadLabel="Tải lên" fileLimit="1"
+				fileUploadListener="#{membersBean.uploadAlbum}" mode="advanced"
+				sizeLimit="20480000" />
+		</h:form>
+	</p:dialog>
+</ui:composition>
+</html>

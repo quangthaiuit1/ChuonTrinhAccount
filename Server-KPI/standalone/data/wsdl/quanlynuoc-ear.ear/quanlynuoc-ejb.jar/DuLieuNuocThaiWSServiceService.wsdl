@@ -1,0 +1,656 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://httpDuLieuNuocThaiDetailWSServiceSoap/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="DuLieuNuocThaiWSServiceService" targetNamespace="http://httpDuLieuNuocThaiDetailWSServiceSoap/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jaxb.dev.java.net/array" version="1.0">
+
+  <xs:complexType final="#all" name="anyTypeArray">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="item" nillable="true" type="xs:anyType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://httpDuLieuNuocThaiDetailWSServiceSoap/" xmlns:ns1="http://jaxb.dev.java.net/array" elementFormDefault="unqualified" targetNamespace="http://httpDuLieuNuocThaiDetailWSServiceSoap/" version="1.0">
+
+  <xs:import namespace="http://jaxb.dev.java.net/array"/>
+
+  <xs:element name="chisotruoc" type="tns:chisotruoc"/>
+
+  <xs:element name="chisotruocResponse" type="tns:chisotruocResponse"/>
+
+  <xs:element name="findAllDLNT" type="tns:findAllDLNT"/>
+
+  <xs:element name="findAllDLNTResponse" type="tns:findAllDLNTResponse"/>
+
+  <xs:element name="findAllKhuVucNuocThai" type="tns:findAllKhuVucNuocThai"/>
+
+  <xs:element name="findAllKhuVucNuocThaiResponse" type="tns:findAllKhuVucNuocThaiResponse"/>
+
+  <xs:element name="findByIdAll" type="tns:findByIdAll"/>
+
+  <xs:element name="findByIdAllResponse" type="tns:findByIdAllResponse"/>
+
+  <xs:element name="findDepartmentById" type="tns:findDepartmentById"/>
+
+  <xs:element name="findDepartmentByIdResponse" type="tns:findDepartmentByIdResponse"/>
+
+  <xs:element name="findEmployeeByCodeNew" type="tns:findEmployeeByCodeNew"/>
+
+  <xs:element name="findEmployeeByCodeNewResponse" type="tns:findEmployeeByCodeNewResponse"/>
+
+  <xs:element name="findKhuVucNuocThaiById" type="tns:findKhuVucNuocThaiById"/>
+
+  <xs:element name="findKhuVucNuocThaiByIdResponse" type="tns:findKhuVucNuocThaiByIdResponse"/>
+
+  <xs:element name="findListDuLieuNuocThaiDetail" type="tns:findListDuLieuNuocThaiDetail"/>
+
+  <xs:element name="findListDuLieuNuocThaiDetailResponse" type="tns:findListDuLieuNuocThaiDetailResponse"/>
+
+  <xs:element name="findNhomXuLyNuocThai" type="tns:findNhomXuLyNuocThai"/>
+
+  <xs:element name="findNhomXuLyNuocThaiResponse" type="tns:findNhomXuLyNuocThaiResponse"/>
+
+  <xs:element name="findRange" type="tns:findRange"/>
+
+  <xs:element name="findRangeByStrDate" type="tns:findRangeByStrDate"/>
+
+  <xs:element name="findRangeByStrDateResponse" type="tns:findRangeByStrDateResponse"/>
+
+  <xs:element name="findRangeResponse" type="tns:findRangeResponse"/>
+
+  <xs:element name="getOneAcount" type="tns:getOneAcount"/>
+
+  <xs:element name="getOneAcountResponse" type="tns:getOneAcountResponse"/>
+
+  <xs:element name="saveOrUpdate" type="tns:saveOrUpdate"/>
+
+  <xs:element name="saveOrUpdateDuLieuNuocThai" type="tns:saveOrUpdateDuLieuNuocThai"/>
+
+  <xs:element name="saveOrUpdateDuLieuNuocThaiResponse" type="tns:saveOrUpdateDuLieuNuocThaiResponse"/>
+
+  <xs:element name="saveOrUpdateResponse" type="tns:saveOrUpdateResponse"/>
+
+  <xs:complexType name="findAllKhuVucNuocThai">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findAllKhuVucNuocThaiResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:khuVucNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="khuVucNuocThai">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="khongtinhtong" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="khuVucNuocThai" type="tns:khuVucNuocThai"/>
+          <xs:element minOccurs="0" name="khuVucNuocThaiParent" type="tns:khuVucNuocThai"/>
+          <xs:element name="level" type="xs:int"/>
+          <xs:element minOccurs="0" name="ma" type="xs:string"/>
+          <xs:element minOccurs="0" name="nhomKhuVucNuocThai" type="tns:nhomKhuVucNuocThai"/>
+          <xs:element minOccurs="0" name="ten" type="xs:string"/>
+          <xs:element name="tile" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity">
+    <xs:sequence>
+      <xs:element name="color" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="createdUser" type="xs:string"/>
+      <xs:element name="disable" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element name="index" type="xs:int"/>
+      <xs:element minOccurs="0" name="modifiedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="oldData" type="xs:boolean"/>
+      <xs:element name="select" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="nhomKhuVucNuocThai">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="ma" type="xs:string"/>
+          <xs:element minOccurs="0" name="ten" type="xs:string"/>
+          <xs:element name="xuly" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findDepartmentById">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="department_id" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findDepartmentByIdResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="ns1:anyTypeArray"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByIdAll">
+    <xs:sequence>
+      <xs:element name="id" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByIdAllResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="duLieuNuocThai">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="chisodausach" type="xs:double"/>
+          <xs:element name="chisodauthai" type="xs:double"/>
+          <xs:element name="chisohientaisach" type="xs:double"/>
+          <xs:element name="chisohientaithai" type="xs:double"/>
+          <xs:element name="chisonuocsachcackhuvuc" type="xs:double"/>
+          <xs:element name="chisosudungsach" type="xs:double"/>
+          <xs:element name="chisosudungthai" type="xs:double"/>
+          <xs:element minOccurs="0" name="ngay" type="xs:dateTime"/>
+          <xs:element name="tongtontaihogom" type="xs:double"/>
+          <xs:element name="tongxuly" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="chisotruoc">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="now" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="chisotruocResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findNhomXuLyNuocThai">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findNhomXuLyNuocThaiResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:nhomKhuVucNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findEmployeeByCodeNew">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="codeEm" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findEmployeeByCodeNewResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="ns1:anyTypeArray"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAllDLNT">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ngay" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAllDLNTResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findListDuLieuNuocThaiDetail">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id_dlnt" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findListDuLieuNuocThaiDetailResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:duLieuNuocThaiDetail"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="duLieuNuocThaiDetail">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="cshochua" type="xs:double"/>
+          <xs:element name="cshochuacl" type="xs:double"/>
+          <xs:element name="cshochuatruoc" type="xs:double"/>
+          <xs:element name="csnuocsach" type="xs:double"/>
+          <xs:element name="csnuocsachcl" type="xs:double"/>
+          <xs:element name="csnuocsachtruoc" type="xs:double"/>
+          <xs:element name="csnuocthai" type="xs:double"/>
+          <xs:element name="csnuocthaicl" type="xs:double"/>
+          <xs:element name="csnuocthaitruoc" type="xs:double"/>
+          <xs:element minOccurs="0" name="duLieuNuocThai" type="tns:duLieuNuocThai"/>
+          <xs:element name="haophi" type="xs:double"/>
+          <xs:element minOccurs="0" name="khuVucNuocThai" type="tns:khuVucNuocThai"/>
+          <xs:element name="tinhthaira" type="xs:double"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findKhuVucNuocThaiById">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="id_kvnt" type="xs:long"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findKhuVucNuocThaiByIdResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:khuVucNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getOneAcount">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="user" type="xs:string"/>
+      <xs:element minOccurs="0" name="pass" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="getOneAcountResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="ns1:anyTypeArray"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="duLieuNuocThai" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdateResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRange">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRangeResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRangeByStrDate">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ngay" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRangeByStrDateResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:duLieuNuocThai"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdateDuLieuNuocThai">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="strNgay" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdateDuLieuNuocThaiResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findDepartmentById">
+    <wsdl:part element="tns:findDepartmentById" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdateResponse">
+    <wsdl:part element="tns:saveOrUpdateResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByIdAll">
+    <wsdl:part element="tns:findByIdAll" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllDLNT">
+    <wsdl:part element="tns:findAllDLNT" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findListDuLieuNuocThaiDetail">
+    <wsdl:part element="tns:findListDuLieuNuocThaiDetail" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOneAcount">
+    <wsdl:part element="tns:getOneAcount" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdate">
+    <wsdl:part element="tns:saveOrUpdate" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByIdAllResponse">
+    <wsdl:part element="tns:findByIdAllResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findNhomXuLyNuocThaiResponse">
+    <wsdl:part element="tns:findNhomXuLyNuocThaiResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRangeByStrDate">
+    <wsdl:part element="tns:findRangeByStrDate" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findKhuVucNuocThaiByIdResponse">
+    <wsdl:part element="tns:findKhuVucNuocThaiByIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdateDuLieuNuocThai">
+    <wsdl:part element="tns:saveOrUpdateDuLieuNuocThai" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findListDuLieuNuocThaiDetailResponse">
+    <wsdl:part element="tns:findListDuLieuNuocThaiDetailResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllKhuVucNuocThai">
+    <wsdl:part element="tns:findAllKhuVucNuocThai" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="chisotruocResponse">
+    <wsdl:part element="tns:chisotruocResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllKhuVucNuocThaiResponse">
+    <wsdl:part element="tns:findAllKhuVucNuocThaiResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRangeResponse">
+    <wsdl:part element="tns:findRangeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="chisotruoc">
+    <wsdl:part element="tns:chisotruoc" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findNhomXuLyNuocThai">
+    <wsdl:part element="tns:findNhomXuLyNuocThai" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findEmployeeByCodeNew">
+    <wsdl:part element="tns:findEmployeeByCodeNew" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getOneAcountResponse">
+    <wsdl:part element="tns:getOneAcountResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findKhuVucNuocThaiById">
+    <wsdl:part element="tns:findKhuVucNuocThaiById" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findEmployeeByCodeNewResponse">
+    <wsdl:part element="tns:findEmployeeByCodeNewResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRange">
+    <wsdl:part element="tns:findRange" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findDepartmentByIdResponse">
+    <wsdl:part element="tns:findDepartmentByIdResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdateDuLieuNuocThaiResponse">
+    <wsdl:part element="tns:saveOrUpdateDuLieuNuocThaiResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findAllDLNTResponse">
+    <wsdl:part element="tns:findAllDLNTResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findRangeByStrDateResponse">
+    <wsdl:part element="tns:findRangeByStrDateResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="httpDuLieuNuocThaiDetailWSServiceSoap">
+    <wsdl:operation name="findAllKhuVucNuocThai">
+      <wsdl:input message="tns:findAllKhuVucNuocThai" name="findAllKhuVucNuocThai">
+    </wsdl:input>
+      <wsdl:output message="tns:findAllKhuVucNuocThaiResponse" name="findAllKhuVucNuocThaiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findDepartmentById">
+      <wsdl:input message="tns:findDepartmentById" name="findDepartmentById">
+    </wsdl:input>
+      <wsdl:output message="tns:findDepartmentByIdResponse" name="findDepartmentByIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByIdAll">
+      <wsdl:input message="tns:findByIdAll" name="findByIdAll">
+    </wsdl:input>
+      <wsdl:output message="tns:findByIdAllResponse" name="findByIdAllResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="chisotruoc">
+      <wsdl:input message="tns:chisotruoc" name="chisotruoc">
+    </wsdl:input>
+      <wsdl:output message="tns:chisotruocResponse" name="chisotruocResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findNhomXuLyNuocThai">
+      <wsdl:input message="tns:findNhomXuLyNuocThai" name="findNhomXuLyNuocThai">
+    </wsdl:input>
+      <wsdl:output message="tns:findNhomXuLyNuocThaiResponse" name="findNhomXuLyNuocThaiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findEmployeeByCodeNew">
+      <wsdl:input message="tns:findEmployeeByCodeNew" name="findEmployeeByCodeNew">
+    </wsdl:input>
+      <wsdl:output message="tns:findEmployeeByCodeNewResponse" name="findEmployeeByCodeNewResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findAllDLNT">
+      <wsdl:input message="tns:findAllDLNT" name="findAllDLNT">
+    </wsdl:input>
+      <wsdl:output message="tns:findAllDLNTResponse" name="findAllDLNTResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findListDuLieuNuocThaiDetail">
+      <wsdl:input message="tns:findListDuLieuNuocThaiDetail" name="findListDuLieuNuocThaiDetail">
+    </wsdl:input>
+      <wsdl:output message="tns:findListDuLieuNuocThaiDetailResponse" name="findListDuLieuNuocThaiDetailResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findKhuVucNuocThaiById">
+      <wsdl:input message="tns:findKhuVucNuocThaiById" name="findKhuVucNuocThaiById">
+    </wsdl:input>
+      <wsdl:output message="tns:findKhuVucNuocThaiByIdResponse" name="findKhuVucNuocThaiByIdResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getOneAcount">
+      <wsdl:input message="tns:getOneAcount" name="getOneAcount">
+    </wsdl:input>
+      <wsdl:output message="tns:getOneAcountResponse" name="getOneAcountResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdate">
+      <wsdl:input message="tns:saveOrUpdate" name="saveOrUpdate">
+    </wsdl:input>
+      <wsdl:output message="tns:saveOrUpdateResponse" name="saveOrUpdateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRange">
+      <wsdl:input message="tns:findRange" name="findRange">
+    </wsdl:input>
+      <wsdl:output message="tns:findRangeResponse" name="findRangeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRangeByStrDate">
+      <wsdl:input message="tns:findRangeByStrDate" name="findRangeByStrDate">
+    </wsdl:input>
+      <wsdl:output message="tns:findRangeByStrDateResponse" name="findRangeByStrDateResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdateDuLieuNuocThai">
+      <wsdl:input message="tns:saveOrUpdateDuLieuNuocThai" name="saveOrUpdateDuLieuNuocThai">
+    </wsdl:input>
+      <wsdl:output message="tns:saveOrUpdateDuLieuNuocThaiResponse" name="saveOrUpdateDuLieuNuocThaiResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DuLieuNuocThaiWSServiceServiceSoapBinding" type="tns:httpDuLieuNuocThaiDetailWSServiceSoap">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="findAllKhuVucNuocThai">
+      <soap:operation soapAction="findAllKhuVucNuocThai" style="document"/>
+      <wsdl:input name="findAllKhuVucNuocThai">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findAllKhuVucNuocThaiResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findDepartmentById">
+      <soap:operation soapAction="findDepartmentById" style="document"/>
+      <wsdl:input name="findDepartmentById">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findDepartmentByIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByIdAll">
+      <soap:operation soapAction="findByIdAll" style="document"/>
+      <wsdl:input name="findByIdAll">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findByIdAllResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="chisotruoc">
+      <soap:operation soapAction="chisotruoc" style="document"/>
+      <wsdl:input name="chisotruoc">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="chisotruocResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findNhomXuLyNuocThai">
+      <soap:operation soapAction="findNhomXuLyNuocThai" style="document"/>
+      <wsdl:input name="findNhomXuLyNuocThai">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findNhomXuLyNuocThaiResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findEmployeeByCodeNew">
+      <soap:operation soapAction="findEmployeeByCodeNew" style="document"/>
+      <wsdl:input name="findEmployeeByCodeNew">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findEmployeeByCodeNewResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findAllDLNT">
+      <soap:operation soapAction="findAllDLNT" style="document"/>
+      <wsdl:input name="findAllDLNT">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findAllDLNTResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findListDuLieuNuocThaiDetail">
+      <soap:operation soapAction="findListDuLieuNuocThaiDetail" style="document"/>
+      <wsdl:input name="findListDuLieuNuocThaiDetail">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findListDuLieuNuocThaiDetailResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findKhuVucNuocThaiById">
+      <soap:operation soapAction="findKhuVucNuocThaiById" style="document"/>
+      <wsdl:input name="findKhuVucNuocThaiById">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findKhuVucNuocThaiByIdResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getOneAcount">
+      <soap:operation soapAction="getOneAcount" style="document"/>
+      <wsdl:input name="getOneAcount">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getOneAcountResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdate">
+      <soap:operation soapAction="saveOrUpdate" style="document"/>
+      <wsdl:input name="saveOrUpdate">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="saveOrUpdateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRange">
+      <soap:operation soapAction="findRange" style="document"/>
+      <wsdl:input name="findRange">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findRangeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findRangeByStrDate">
+      <soap:operation soapAction="findRangeByStrDate" style="document"/>
+      <wsdl:input name="findRangeByStrDate">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findRangeByStrDateResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdateDuLieuNuocThai">
+      <soap:operation soapAction="saveOrUpdateDuLieuNuocThai" style="document"/>
+      <wsdl:input name="saveOrUpdateDuLieuNuocThai">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="saveOrUpdateDuLieuNuocThaiResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DuLieuNuocThaiWSServiceService">
+    <wsdl:port binding="tns:DuLieuNuocThaiWSServiceServiceSoapBinding" name="httpDuLieuNuocThaiDetailWSServiceSoapPort">
+      <soap:address location="http://localhost:8280/quanlynuoc-ejb/httpDuLieuNuocThaiDetailWSServiceSoap"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

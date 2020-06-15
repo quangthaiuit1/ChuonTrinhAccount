@@ -1,0 +1,95 @@
+package trong.lixco.com.account.servicepublics;
+
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.inject.Inject;
+import javax.jws.WebService;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
+import trong.lixco.com.entity.LockTable;
+import trong.lixco.com.entity.Program;
+import trong.lixco.com.impl.ImplLockTable;
+
+@Stateless
+@WebService
+@TransactionManagement(TransactionManagementType.CONTAINER)
+public class LockTableServicePublic implements ImplLockTable {
+	@Inject
+	private EntityManager em;
+
+	@Override
+	public List<LockTable> findAll() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<LockTable> cq = cb.createQuery(LockTable.class);
+		Root<LockTable> root = cq.from(LockTable.class);
+		cq.select(root);
+		TypedQuery<LockTable> query = em.createQuery(cq);
+		return query.getResultList();
+	}
+
+	@Override
+	public LockTable findId(long id) {
+		return em.find(LockTable.class, id);
+	}
+
+	@Override
+	public LockTable create(LockTable formList) {
+		em.persist(formList);
+		return em.merge(formList);
+	}
+
+	@Override
+	public LockTable update(LockTable formList) {
+		return em.merge(formList);
+	}
+
+	@Override
+	public boolean delete(LockTable formList) {
+		try {
+			LockTable merge = em.merge(formList);
+			em.remove(merge);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+	}
+
+	@Override
+	public LockTable findMonthYear(int month, int year, Program program) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<LockTable> cq = cb.createQuery(LockTable.class);
+		Root<LockTable> root = cq.from(LockTable.class);
+		// Query final
+		cq.select(root).where(cb.equal(root.get("month"), month), cb.equal(root.get("year"), year),
+				cb.equal(root.get("program"), program));
+		TypedQuery<LockTable> query = em.createQuery(cq);
+		List<LockTable> formLists = query.getResultList();
+		if (formLists.size() != 0) {
+			return formLists.get(0);
+		} else {
+			return null;
+		}
+
+	}
+
+	@Override
+	public List<LockTable> findByProgram(Program program) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<LockTable> cq = cb.createQuery(LockTable.class);
+		Root<LockTable> root = cq.from(LockTable.class);
+		// Query final
+		cq.select(root).where(cb.equal(root.get("program"), program));
+		TypedQuery<LockTable> query = em.createQuery(cq);
+		List<LockTable> formLists = query.getResultList();
+		return formLists;
+
+	}
+
+}

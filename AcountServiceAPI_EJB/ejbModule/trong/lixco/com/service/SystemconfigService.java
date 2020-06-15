@@ -1,0 +1,92 @@
+package trong.lixco.com.service;
+
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.ejb.TransactionManagement;
+import javax.ejb.TransactionManagementType;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import trong.lixco.com.entity.Program;
+import trong.lixco.com.util.DatabaseName;
+import trong.lixco.com.util.Systemconfig;
+
+@Stateless
+@TransactionManagement(TransactionManagementType.CONTAINER)
+public class SystemconfigService {
+	@Inject
+	private EntityManager em;
+
+	public Systemconfig update(Systemconfig systemconfig) {
+		if (systemconfig.getId() == null) {
+			List<DatabaseName> databaseNames = systemconfig.getDatabaseNames();
+			em.persist(systemconfig);
+			systemconfig = em.merge(systemconfig);
+			for (int i = 0; i < databaseNames.size(); i++) {
+				if (databaseNames.get(i).getId() == null) {
+					databaseNames.get(i).setSystemconfig(systemconfig);
+					em.persist(databaseNames.get(i));
+				} else {
+					em.merge(databaseNames.get(i));
+				}
+			}
+		} else {
+			List<DatabaseName> databaseNames = systemconfig.getDatabaseNames();
+			em.merge(systemconfig);
+			for (int i = 0; i < databaseNames.size(); i++) {
+				if (databaseNames.get(i).getId() == null) {
+					databaseNames.get(i).setSystemconfig(systemconfig);
+					em.persist(databaseNames.get(i));
+				} else {
+					em.merge(databaseNames.get(i));
+				}
+			}
+		}
+		return systemconfig;
+	}
+
+	public boolean delete_databasename(DatabaseName databaseName) {
+		try {
+			DatabaseName merge = em.merge(databaseName);
+			em.remove(merge);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+
+	}
+
+	public List<Systemconfig> load() {
+		CriteriaQuery<Systemconfig> cq = em.getCriteriaBuilder().createQuery(Systemconfig.class);
+		Root<Systemconfig> from = cq.from(Systemconfig.class);
+		cq.select(from);
+		TypedQuery<Systemconfig> createQuery = em.createQuery(cq);
+		List<Systemconfig> resultList = createQuery.getResultList();
+		return resultList;
+
+	}
+
+	public Systemconfig findByProgram(Program program) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Systemconfig> cq = cb.createQuery(Systemconfig.class);
+		List<Predicate> predicates = new LinkedList<Predicate>();
+		Root<Systemconfig> root = cq.from(Systemconfig.class);
+		cq.select(root).where(cb.equal(root.get("program"), program));
+		TypedQuery<Systemconfig> createQuery = em.createQuery(cq);
+		List<Systemconfig> resultList = createQuery.getResultList();
+		if (resultList.size() != 0) {
+			return resultList.get(0);
+		} else {
+			return null;
+		}
+
+	}
+
+}

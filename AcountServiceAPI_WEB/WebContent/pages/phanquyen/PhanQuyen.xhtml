@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	<ui:define name="content">
+		<h3 style="margin: 0px">Phân quyền</h3>
+		<p:separator />
+		<h:form id="menuformid">
+			<p:selectOneMenu value="#{roleBean.program}"
+				converter="abstractConverter" effect="fade" var="t"
+				styleClass="seOnMe95" filter="true" filterMatchMode="contain">
+				<p:ajax listener="#{roleBean.ajax_selectProgram}"
+					update=":menuformid" />
+				<f:selectItems value="#{menuBean.programs}" var="theme"
+					itemLabel="#{theme.fullname}" itemValue="#{theme}" />
+				<p:column>
+					<h:outputText value="#{t.fullname}" />
+				</p:column>
+			</p:selectOneMenu>
+			<h:panelGrid columns="2" style="width:100%;" columnClasses="w60,w40">
+				<p:panel header="Quyền" styleClass="panelw100">
+					<p:tabView>
+						<p:tab title="Chi tiết">
+							<p:dataTable value="#{roleBean.userRights}" lazy="true"
+								style="width:500px; height:320px" rowKey="#{item.id}"
+								widgetVar="datatb" resizableColumns="true" var="item">
+								<p:column headerText="Tên Form" style="width:150px">
+									<h:outputText value="#{item.formList.name}" />
+								</p:column>
+								<p:column headerText="Truy cập"
+									style="width:50px; text-align:center">
+									<p:selectBooleanCheckbox value="#{item.allow}" />
+								</p:column>
+								<p:column headerText="Thêm mới"
+									style="width:50px; text-align:center">
+									<p:selectBooleanCheckbox value="#{item.insert}" />
+								</p:column>
+								<p:column headerText="Cập nhật"
+									style="width:50px; text-align:center">
+									<p:selectBooleanCheckbox value="#{item.update}" />
+								</p:column>
+								<p:column headerText="Xoá" style="width:50px; text-align:center">
+									<p:selectBooleanCheckbox value="#{item.delete}" />
+								</p:column>
+								<f:facet name="footer">
+									<div style="clear: both;" />
+								</f:facet>
+							</p:dataTable>
+						</p:tab>
+						<p:tab title="Thông tin">
+							<h:panelGrid id="info">
+								<p:outputLabel value="Quyền*" for="rname" />
+								<p:inputText value="#{roleBean.role.name}" id="rname">
+									<f:validateRequired />
+								</p:inputText>
+								<p:outputLabel value="Ghi chú" />
+								<p:inputTextarea placeholder="Mô tả..." cols="24" rows="4"
+									value="#{roleBean.role.description}" />
+							</h:panelGrid>
+						</p:tab>
+					</p:tabView>
+					<p:separator />
+					<p:commandButton value="Lưu/Cập nhật"
+						action="#{roleBean.createOrUpdate()}"
+						update=":messages,:menuformid" />
+					<p:commandButton value="Tạo mới" action="#{roleBean.reset()}"
+						process="@this" update=":menuformid" />
+				</p:panel>
+				<p:panel header="Danh sách" id="preview" style=" height:500px">
+					<h:panelGrid id="mainGrid" columns="6"
+						style="float:left; margin-bottom:5px">
+						<p:tooltip for="xoact" value="Xoá nhân viên" />
+						<p:commandButton icon="ui-icon-trash" id="xoact" process="@this"
+							update=":messages, :menuformid" action="#{roleBean.deleteRole()}">
+							<p:confirm icon="ui-icon-alert" />
+						</p:commandButton>
+					</h:panelGrid>
+					<div style="clear: both" />
+					<p:dataTable value="#{roleBean.roles}" lazy="true"
+						rowKey="#{item.id}" selection="#{roleBean.roleEdit}"
+						scrollable="true" selectionMode="single" scrollWidth="550"
+						scrollHeight="370" widgetVar="datatb" resizableColumns="true"
+						var="item">
+						<p:ajax event="rowSelect" listener="#{roleBean.showEdit()}"
+							update=":menuformid" />
+						<p:column headerText="ID" style="width:30px">
+							<h:outputText value="#{item.id}" />
+						</p:column>
+						<p:column headerText="Quyền" style="width:200px">
+							<h:outputText value="#{item.name}" />
+						</p:column>
+						<p:column headerText="Mô tả" style="width:250px">
+							<h:outputText value="#{item.description}" />
+						</p:column>
+						<f:facet name="footer">
+							<div style="clear: both;" />
+						</f:facet>
+					</p:dataTable>
+				</p:panel>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

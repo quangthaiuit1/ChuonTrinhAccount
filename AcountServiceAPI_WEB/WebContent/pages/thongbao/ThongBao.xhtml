@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html" template="/pages/Home.xhtml">
+	<ui:define name="content">
+		<h3 style="margin: 0px">Thông báo</h3>
+		<p:separator />
+		<h:form id="menuformid">
+			<h:panelGrid columns="2" style="width:100%;" columnClasses="w60,w40">
+				<p:panel header="Tổng quan" styleClass="panelw100">
+					<p:tabView id="tv">
+						<p:tab title="Thông tin">
+							<h:panelGrid id="info">
+								<p:outputLabel value="Tiêu đề" for="rname" />
+								<p:inputText value="#{noticeSystemBean.noticeSystem.title}"
+									id="rname">
+									<f:validateRequired />
+								</p:inputText>
+								<p:outputLabel value="Nội dung" />
+								<p:inputTextarea placeholder="..." cols="24" rows="4"
+									value="#{noticeSystemBean.noticeSystem.content}" />
+							</h:panelGrid>
+						</p:tab>
+						<p:tab title="Phòng ban/ Nhân viên">
+							<p:dataTable value="#{noticeSystemBean.departments}" lazy="true"
+								style="width:500px; height:120px" rowKey="#{item.id}"
+								selectionMode="single"
+								selection="#{noticeSystemBean.departmentEdit}"
+								resizableColumns="true" var="item">
+								<p:ajax event="rowSelect" update=":menuformid:tv:tablemember"
+									listener="#{noticeSystemBean.showEditDepartment()}" />
+								<p:column headerText="..." style="width:20px">
+									<h:selectBooleanCheckbox value="#{item.select}" />
+								</p:column>
+								<p:column headerText="Id" style="width:50px">
+									<h:outputText value="#{item.id}" />
+								</p:column>
+								<p:column headerText="Phòng ban">
+									<h:outputText value="#{item.name}" />
+								</p:column>
+								<f:facet name="footer">
+									<div style="clear: both;" />
+								</f:facet>
+							</p:dataTable>
+							<p:dataTable value="#{noticeSystemBean.members}" lazy="true"
+								id="tablemember" style="width:500px; height:200px"
+								rowKey="#{item.id}" resizableColumns="true" var="item">
+								<p:column headerText="..." style="width:20px">
+									<h:selectBooleanCheckbox value="#{item.select}" />
+								</p:column>
+								<p:column headerText="Mã NV" style="width:50px">
+									<h:outputText value="#{item.id}" />
+								</p:column>
+								<p:column headerText="Tên nhân viên">
+									<h:outputText value="#{item.name}" />
+								</p:column>
+								<f:facet name="footer">
+									<div style="clear: both;" />
+								</f:facet>
+							</p:dataTable>
+							<p:outputLabel
+								value="Chú ý: Không cập nhập thêm được nhân viên cho thông báo." />
+							<p:separator />
+							<p:commandButton value="Lưu/Cập nhật"
+								action="#{noticeSystemBean.createOrUpdate()}"
+								update=":messages,:menuformid" />
+							<p:commandButton value="Tạo mới"
+								action="#{noticeSystemBean.reset()}" process="@this"
+								update=":menuformid" />
+						</p:tab>
+					</p:tabView>
+				</p:panel>
+				<p:panel header="Danh sách thông báo" id="preview"
+					style=" height:500px">
+					<h:panelGrid id="mainGrid" columns="6"
+						style="float:left; margin-bottom:5px">
+						<p:tooltip for="xoact" value="Xoá thông báo" />
+						<p:commandButton icon="ui-icon-trash" id="xoact" process="@this"
+							update=":messages, :menuformid"
+							action="#{noticeSystemBean.deleteNoticeSystem()}">
+							<p:confirm icon="ui-icon-alert" />
+						</p:commandButton>
+					</h:panelGrid>
+					<div style="clear: both" />
+					<p:dataTable value="#{noticeSystemBean.noticeSystems}" lazy="true"
+						rowKey="#{item.id}"
+						selection="#{noticeSystemBean.noticeSystemEdit}" scrollable="true"
+						selectionMode="single" scrollWidth="550" scrollHeight="370"
+						widgetVar="datatb" resizableColumns="true" var="item">
+						<p:ajax event="rowSelect"
+							listener="#{noticeSystemBean.showEdit()}" update=":menuformid" />
+						<p:column headerText="Id" style="width:50px">
+							<h:outputText value="#{item.id}" />
+						</p:column>
+						<p:column headerText="Tiêu đề"
+							style="width:100px; text-align:center">
+							<h:outputText value="#{item.title}" />
+						</p:column>
+						<p:column headerText="Nội dung">
+							<p:inputTextarea placeholder="..." style="width:98%" rows="2"
+								readonly="true" value="#{item.content}" />
+						</p:column>
+						<f:facet name="footer">
+							<div style="clear: both;" />
+						</f:facet>
+					</p:dataTable>
+
+				</p:panel>
+			</h:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://servicepublics.account.com.lixco.trong/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="DepartNoticeRelaServicePublicService" targetNamespace="http://servicepublics.account.com.lixco.trong/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://servicepublics.account.com.lixco.trong/" elementFormDefault="unqualified" targetNamespace="http://servicepublics.account.com.lixco.trong/" version="1.0">
+
+  <xs:element name="findByDepartment" type="tns:findByDepartment"/>
+
+  <xs:element name="findByDepartmentResponse" type="tns:findByDepartmentResponse"/>
+
+  <xs:element name="findByNotice" type="tns:findByNotice"/>
+
+  <xs:element name="findByNoticeResponse" type="tns:findByNoticeResponse"/>
+
+  <xs:element name="saveOrUpdater" type="tns:saveOrUpdater"/>
+
+  <xs:element name="saveOrUpdaterResponse" type="tns:saveOrUpdaterResponse"/>
+
+  <xs:complexType name="findByDepartment">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:department"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="department">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="codeMem" type="xs:string"/>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="levelDep" type="tns:levelDep"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEntity">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="createdDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="createdUser" type="xs:string"/>
+      <xs:element name="disable" type="xs:boolean"/>
+      <xs:element minOccurs="0" name="id" type="xs:long"/>
+      <xs:element minOccurs="0" name="modifiedDate" type="xs:dateTime"/>
+      <xs:element minOccurs="0" name="note" type="xs:string"/>
+      <xs:element name="select" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="levelDep">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element name="level" type="xs:int"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="findByDepartmentResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:departNoticeRela"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="departNoticeRela">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="noticeSystem" type="tns:noticeSystem"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="noticeSystem">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="content" type="xs:string"/>
+          <xs:element minOccurs="0" name="date" type="xs:dateTime"/>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="member" type="tns:member"/>
+          <xs:element minOccurs="0" name="title" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="member">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="account" type="tns:account"/>
+          <xs:element minOccurs="0" name="code" type="xs:string"/>
+          <xs:element minOccurs="0" name="department" type="tns:department"/>
+          <xs:element minOccurs="0" name="email" type="xs:string"/>
+          <xs:element minOccurs="0" name="name" type="xs:string"/>
+          <xs:element minOccurs="0" name="sign" type="xs:base64Binary"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="account">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="admin" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="member" type="tns:member"/>
+          <xs:element name="notice" type="xs:boolean"/>
+          <xs:element name="online" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="password" type="xs:string"/>
+          <xs:element minOccurs="0" name="privateConfig" type="tns:privateConfig"/>
+          <xs:element minOccurs="0" name="userName" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="privateConfig">
+    <xs:complexContent>
+      <xs:extension base="tns:abstractEntity">
+        <xs:sequence>
+          <xs:element name="decimalNumber" type="xs:int"/>
+          <xs:element minOccurs="0" name="decimalPattent" type="xs:string"/>
+          <xs:element minOccurs="0" name="decimalSeparator" type="xs:string"/>
+          <xs:element minOccurs="0" name="pattentDate" type="xs:string"/>
+          <xs:element name="showHeader" type="xs:boolean"/>
+          <xs:element minOccurs="0" name="thousandSeparator" type="xs:string"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdater">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:departNoticeRela"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="saveOrUpdaterResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:departNoticeRela"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByNotice">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="arg0" type="tns:noticeSystem"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findByNoticeResponse">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="tns:departNoticeRela"/>
+    </xs:sequence>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="findByNoticeResponse">
+    <wsdl:part element="tns:findByNoticeResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByNotice">
+    <wsdl:part element="tns:findByNotice" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByDepartment">
+    <wsdl:part element="tns:findByDepartment" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdaterResponse">
+    <wsdl:part element="tns:saveOrUpdaterResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="saveOrUpdater">
+    <wsdl:part element="tns:saveOrUpdater" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="findByDepartmentResponse">
+    <wsdl:part element="tns:findByDepartmentResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="DepartNoticeRelaServicePublic">
+    <wsdl:operation name="findByDepartment">
+      <wsdl:input message="tns:findByDepartment" name="findByDepartment">
+    </wsdl:input>
+      <wsdl:output message="tns:findByDepartmentResponse" name="findByDepartmentResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdater">
+      <wsdl:input message="tns:saveOrUpdater" name="saveOrUpdater">
+    </wsdl:input>
+      <wsdl:output message="tns:saveOrUpdaterResponse" name="saveOrUpdaterResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByNotice">
+      <wsdl:input message="tns:findByNotice" name="findByNotice">
+    </wsdl:input>
+      <wsdl:output message="tns:findByNoticeResponse" name="findByNoticeResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="DepartNoticeRelaServicePublicServiceSoapBinding" type="tns:DepartNoticeRelaServicePublic">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="findByDepartment">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findByDepartment">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findByDepartmentResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="saveOrUpdater">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="saveOrUpdater">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="saveOrUpdaterResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="findByNotice">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="findByNotice">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="findByNoticeResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="DepartNoticeRelaServicePublicService">
+    <wsdl:port binding="tns:DepartNoticeRelaServicePublicServiceSoapBinding" name="DepartNoticeRelaServicePublicPort">
+      <soap:address location="http://localhost:8180/account_service/DepartNoticeRelaServicePublic"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

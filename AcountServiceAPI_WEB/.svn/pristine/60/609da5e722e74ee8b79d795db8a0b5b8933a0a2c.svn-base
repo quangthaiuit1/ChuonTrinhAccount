@@ -1,0 +1,92 @@
+package trong.lixco.com.bean;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.ejb.LocalBean;
+import javax.ejb.ScheduleExpression;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
+import javax.inject.Inject;
+
+import trong.lixco.com.service.SystemconfigService;
+import trong.lixco.com.service.TimeBackupService;
+import trong.lixco.com.util.DatabaseName;
+import trong.lixco.com.util.Systemconfig;
+import trong.lixco.com.util.TimeBackup;
+
+@Singleton
+@Startup
+@LocalBean
+public class SimpleTimer {
+	@Resource
+	private TimerService timerService;
+	@Inject
+	private TimeBackupService timeBackupService;
+	@Inject
+	private SystemconfigService systemconfigService;
+
+	@PostConstruct
+	private void init() {
+		time();
+	}
+
+	public void time() {
+		Timer timer = null;
+		Collection<Timer> timers = timerService.getTimers();
+		Iterator<Timer> iterator = timers.iterator();
+		while (iterator.hasNext()) {
+			timer = iterator.next();
+			timer.cancel();
+		}
+		TimerConfig timerConfig = new TimerConfig();
+		timerConfig.setInfo("CalendarProgTimerDemo_Info");
+		List<TimeBackup> timeBackups = timeBackupService.load();
+		if (timeBackups.size() != 0) {
+			TimeBackup timeBackup = timeBackupService.load().get(0);
+			String year = timeBackup.getYear();
+			String month = timeBackup.getMonth();
+			String dayOfMonth = timeBackup.getDayOfMonth();
+			String hour = timeBackup.getHour();
+			String minute = timeBackup.getMinute();
+			ScheduleExpression schedule = new ScheduleExpression();
+			schedule.year(year).month(month).dayOfMonth(dayOfMonth).hour(hour).minute(minute).second("1");
+			timerService.createCalendarTimer(schedule, timerConfig);
+		}
+	}
+
+	@Timeout
+	public void execute(Timer timer) {
+		BackResMethod bk = new BackResMethod();
+		List<Systemconfig> tempConf = systemconfigService.load();
+		List<String> databasebackuperror = new ArrayList<String>();
+		for (int i = 0; i < tempConf.size(); i++) {
+			Systemconfig systemconfig = tempConf.get(i);
+			String pathSaveDatabase = systemconfig.getPathSaveDatabase();
+			String pathInstallMySQLBin = systemconfig.getPathMySQL();
+			String userName = systemconfig.getUserName();
+			String password = systemconfig.getPassword();
+			List<DatabaseName> databaseNames = systemconfig.getDatabaseNames();
+			for (int j = 0; j < databaseNames.size(); j++) {
+				boolean result = bk.backup(pathInstallMySQLBin, userName, password, databaseNames.get(j).getName(),
+						pathSaveDatabase, systemconfig.getProgram().getName());
+				if (result == false) {
+					databaseNames.get(j);
+				}
+			}
+		}
+		if (databasebackuperror.size() != 0) {
+			System.out.println("Những cơ sở dữ liệu không backup được: " + databasebackuperror.toString());
+		} else {
+			System.out.println("Backup thành công tất cả database.");
+		}
+	}
+}

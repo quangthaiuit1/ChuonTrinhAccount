@@ -1,0 +1,305 @@
+package trong.lixco.com.bean;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.servlet.ServletContext;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+
+import trong.lixco.com.service.SystemconfigService;
+import trong.lixco.com.service.TimeBackupService;
+import trong.lixco.com.util.DatabaseName;
+import trong.lixco.com.util.Notify;
+import trong.lixco.com.util.Systemconfig;
+import trong.lixco.com.util.TimeBackup;
+
+@ManagedBean
+@ViewScoped
+public class BackupRestore {
+	private Notify notify;
+	// @Inject
+	// private SimpleTimer simpleTimer;
+	@Inject
+	private TimeBackupService timeBackupService;
+	private TimeBackup timeBackup;
+	private Systemconfig systemconfig;
+
+	// Get contextPath
+	ServletContext ctx = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+	String parentPath = ctx.getRealPath("/");
+
+	// Download
+	private StreamedContent file;
+
+	// search date
+	private Date dateSearch;
+
+	// status parent
+	private boolean status = true;
+
+	private BackResMethod bk;
+
+	// Download
+	public void restore(String nameFile) {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		InputStream stream = ((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext())
+				.getResourceAsStream("/BackupRestoreMysqldb/" + nameFile);
+		file = new DefaultStreamedContent(stream, "database", nameFile);
+
+		try {
+			bk.restoreDB(this.systemconfig.getPathMySQL() + "mysql", this.systemconfig.getUserName(),
+					this.systemconfig.getPassword(), this.systemconfig.getPathSaveDatabase() + "\\" + nameFile);
+			notify.success();
+		} catch (Exception e) {
+			e.printStackTrace();
+			notify.error();
+		}
+	}
+
+	// Upload
+	public void upload(FileUploadEvent event) {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		try {
+			File file = new File(parentPath + "upload");
+			InputStream inputStream = event.getFile().getInputstream();
+			File fileFinal = new File(file, event.getFile().getFileName());
+			OutputStream out = new FileOutputStream(fileFinal);
+			int read = 0;
+			byte[] bytes = new byte[1024];
+			while ((read = inputStream.read(bytes)) != -1) {
+				out.write(bytes, 0, read);
+			}
+			inputStream.close();
+			out.flush();
+			out.close();
+			bk.restoreDB(this.systemconfig.getPathMySQL() + "mysql", this.systemconfig.getUserName(),
+					this.systemconfig.getPassword(), parentPath + "upload\\" + event.getFile().getFileName());
+			event = null;
+			notify.success();
+		} catch (IOException e) {
+			e.printStackTrace();
+			notify.error();
+		}
+	}
+
+	public void status(int status) {
+		if (status == 0) {
+			this.status = true;
+		} else if (status == 1) {
+			this.status = false;
+		}
+	}
+
+	// SearchFile
+	public void searchFile() {
+		if (dateSearch != null) {
+			dateSearch.toString();
+		}
+	}
+
+	public void saveConfigSystem() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		systemconfig=systemconfigService.update(systemconfig);
+		notify.message("Cài đặt thành công!", "Hệ thống sẽ theo cấu hình này");
+	}
+
+	@Inject
+	private SimpleTimer simpleTimer;
+
+	// Save backupAutomatic
+	public void saveBackupAutomatic() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		timeBackupService.update(timeBackup);
+		simpleTimer.time();
+		notify.success();
+	}
+
+	// Download
+	public void download(String nameFile) {
+		File fileTem = null;
+		File[] files = listFileFromFolder(this.systemconfig.getPathSaveDatabase());
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].getName().equals(nameFile)) {
+				fileTem = files[i];
+				InputStream stream;
+				try {
+					stream = new FileInputStream(fileTem);
+					file = new DefaultStreamedContent(stream, "database", nameFile);
+				} catch (FileNotFoundException e) {
+					e.printStackTrace();
+				}
+				break;
+			}
+
+		}
+
+	}
+
+	@Inject
+	private SystemconfigService systemconfigService;
+
+	// Backup
+	public void backupNow() {
+		notify = new Notify(FacesContext.getCurrentInstance());
+		int index = 0;
+		for (int i = 0; i < this.systemconfig.getDatabaseNames().size(); i++) {
+			boolean result = bk.backup(this.systemconfig.getPathMySQL(), this.systemconfig.getUserName(),
+					this.systemconfig.getPassword(), this.systemconfig.getDatabaseNames().get(i).getName(),
+					this.systemconfig.getPathSaveDatabase(), this.systemconfig.getProgram().getName());
+			if (result)
+				index++;
+		}
+		notify.success("Sao lưu được " + index + " CSDL!");
+	}
+
+	// Show list file name
+	public void showListFile() {
+		nameFiles.clear();
+		File[] files = listFileFromFolder(this.systemconfig.getPathSaveDatabase());
+		for (int i = 0; i < files.length; i++) {
+			nameFiles.add(files[i].getName());
+		}
+	}
+
+	private List<String> nameFiles;
+
+	@PostConstruct
+	public void value() {
+		databaseName = new DatabaseName();
+		bk = new BackResMethod();
+		nameFiles = new ArrayList<String>();
+		List<TimeBackup> tempbk = timeBackupService.load();
+		if (tempbk.size() != 0) {
+			timeBackup = tempbk.get(0);
+		} else {
+			timeBackup = new TimeBackup();
+		}
+		install();
+
+	}
+
+	public void ajax_program() {
+		Systemconfig sc = systemconfigService.findByProgram(systemconfig.getProgram());
+		if (sc != null) {
+			this.systemconfig = sc;
+		} else {
+			this.systemconfig.setId(null);
+		}
+	}
+
+	private DatabaseName databaseName;
+
+	public void add_databaseName() {
+		if (databaseName.getName() != null) {
+			if (systemconfig.getDatabaseNames() == null) {
+				List<DatabaseName> databaseNames = new ArrayList<DatabaseName>();
+				databaseNames.add(databaseName);
+				systemconfig.setDatabaseNames(databaseNames);
+
+			} else {
+				systemconfig.getDatabaseNames().add(databaseName);
+			}
+			databaseName = new DatabaseName();
+		}
+	}
+
+	public void delete_databaseName(DatabaseName databaseName) {
+		if (databaseName != null) {
+			int index = systemconfig.getDatabaseNames().indexOf(databaseName);
+			boolean status = systemconfigService.delete_databasename(databaseName);
+			if (status) {
+				systemconfig.getDatabaseNames().remove(index);
+			}
+		}
+	}
+
+	public void install() {
+		List<Systemconfig> tempConf = systemconfigService.load();
+		if (tempConf.size() != 0)
+			systemconfig = tempConf.get(0);
+
+	}
+
+	public File[] listFileFromFolder(String pathFolder) {
+		File folder = new File(pathFolder);
+		File[] listOfFiles = folder.listFiles();
+		return listOfFiles;
+	}
+
+	public List<String> getNameFiles() {
+		return nameFiles;
+	}
+
+	public void setNameFiles(List<String> nameFiles) {
+		this.nameFiles = nameFiles;
+	}
+
+	public boolean isStatus() {
+		return status;
+	}
+
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+
+	public StreamedContent getFile() {
+		return file;
+	}
+
+	public Date getDateSearch() {
+		return dateSearch;
+	}
+
+	public void setDateSearch(Date dateSearch) {
+		this.dateSearch = dateSearch;
+	}
+
+	public TimeBackup getTimeBackup() {
+		return timeBackup;
+	}
+
+	public void setTimeBackup(TimeBackup timeBackup) {
+		this.timeBackup = timeBackup;
+	}
+
+	public Systemconfig getSystemconfig() {
+		return systemconfig;
+	}
+
+	public void setSystemconfig(Systemconfig systemconfig) {
+		this.systemconfig = systemconfig;
+	}
+
+	public SimpleTimer getSimpleTimer() {
+		return simpleTimer;
+	}
+
+	public void setSimpleTimer(SimpleTimer simpleTimer) {
+		this.simpleTimer = simpleTimer;
+	}
+
+	public DatabaseName getDatabaseName() {
+		return databaseName;
+	}
+
+	public void setDatabaseName(DatabaseName databaseName) {
+		this.databaseName = databaseName;
+	}
+
+}
